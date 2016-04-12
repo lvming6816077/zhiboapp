@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any a77dditional setup after loading the view, typically from a nib.
+    // Do any a77dditional setup after loading ffthe view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning {
