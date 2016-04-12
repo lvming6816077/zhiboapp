@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MessageTableViewCell" id="INK-zS-qnc" customClass="MessageSysTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="INK-zS-qnc" id="0ri-RN-Udj">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="70.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="直播推荐" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TRJ-a0-2ik">
+                        <rect key="frame" x="70" y="10" width="76" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="76" id="YBL-oJ-MKW"/>
+                            <constraint firstAttribute="height" constant="21" id="ZCG-yX-gC7"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="直播大神大神达到深受打击啊是对方是否地方" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8DI-yT-SFV">
+                        <rect key="frame" x="70" y="37" width="192" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="eTe-bR-Is5"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2014-01-01" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRh-sD-ivB">
+                        <rect key="frame" x="232" y="8" width="80" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="9dE-GY-HcI"/>
+                            <constraint firstAttribute="width" constant="80" id="khl-gD-wFc"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="c0q-ZO-6JD">
+                        <rect key="frame" x="8" y="8" width="54" height="54"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="54" id="OdI-Cr-1bG"/>
+                            <constraint firstAttribute="width" constant="54" id="wMY-i7-2f9"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="8DI-yT-SFV" firstAttribute="leading" secondItem="c0q-ZO-6JD" secondAttribute="trailing" constant="8" id="45c-M5-ri2"/>
+                    <constraint firstItem="TRJ-a0-2ik" firstAttribute="top" secondItem="0ri-RN-Udj" secondAttribute="topMargin" constant="2" id="9HX-7c-crW"/>
+                    <constraint firstItem="c0q-ZO-6JD" firstAttribute="leading" secondItem="0ri-RN-Udj" secondAttribute="leading" constant="8" id="BEX-em-wei"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="8DI-yT-SFV" secondAttribute="trailing" constant="50" id="GtD-AG-RYW"/>
+                    <constraint firstItem="TRJ-a0-2ik" firstAttribute="leading" secondItem="c0q-ZO-6JD" secondAttribute="trailing" constant="8" id="HtY-i7-849"/>
+                    <constraint firstItem="8DI-yT-SFV" firstAttribute="top" secondItem="TRJ-a0-2ik" secondAttribute="bottom" constant="6" id="fgB-QO-Pwg"/>
+                    <constraint firstItem="JRh-sD-ivB" firstAttribute="top" secondItem="0ri-RN-Udj" secondAttribute="topMargin" id="jfb-E3-0Nc"/>
+                    <constraint firstItem="JRh-sD-ivB" firstAttribute="trailing" secondItem="0ri-RN-Udj" secondAttribute="trailingMargin" id="pXg-7E-uiv"/>
+                    <constraint firstItem="c0q-ZO-6JD" firstAttribute="top" secondItem="0ri-RN-Udj" secondAttribute="top" constant="8" id="rrh-aT-ueq"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="avatarImageView" destination="c0q-ZO-6JD" id="eng-Yu-IaO"/>
+                <outlet property="descLabel" destination="8DI-yT-SFV" id="97O-vS-YH2"/>
+                <outlet property="timeLabel" destination="JRh-sD-ivB" id="OWH-XM-cis"/>
+                <outlet property="titleLabel" destination="TRJ-a0-2ik" id="YCy-gb-VDh"/>
+            </connections>
+            <point key="canvasLocation" x="225" y="289.5"/>
+        </tableViewCell>
+    </objects>
+</document>
