@@ -22,7 +22,7 @@ NSMutableArray<TabBarBtn *> *arr;
         CALayer *topBorder = [CALayer layer];
         topBorder.frame = CGRectMake(0, 0, self.frame.size.width, 0.5f);
         topBorder.backgroundColor = UIColorFromRGB(0xb2b2b2).CGColor;
-//        [self.layer addSublayer:topBorder];
+        [self.layer addSublayer:topBorder];
         
         
         self.backgroundColor = UIColorFromRGB(0xf8f8f8);
@@ -37,9 +37,13 @@ NSMutableArray<TabBarBtn *> *arr;
             NSDictionary *dic = pageConfigs[i];
             
             if (i == 2) {
-                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i*tabbarWidth, 0, tabbarWidth, HomeTabViewHeight)];
+                UIView *view = [[UIView alloc] initWithFrame:CGRectMake(i*tabbarWidth+2.5, -7, tabbarWidth-5, HomeTabViewHeight)];
+                [view.layer setCornerRadius:3];
+                view.backgroundColor = UIColorFromRGB(0x127aca);
                 UIImageView *publishView = [[UIImageView alloc] init];
-                publishView.frame = CGRectMake(tabbarWidth/2 - 16, 6, 32, 32);
+                [publishView.layer setCornerRadius:publishView.frame.size.width/2];
+                publishView.clipsToBounds = true;
+                publishView.frame = CGRectMake((tabbarWidth-5)/2 - 16, 8, 32, 32);
                 [publishView setImage:[UIImage imageNamed:dic[@"Image"]]];
                 [view addSubview:publishView];
                 [self addSubview:view];
@@ -55,21 +59,21 @@ NSMutableArray<TabBarBtn *> *arr;
                 
                 itemBtn.titleLabel.font = [UIFont systemFontOfSize:12.0];
                 [itemBtn setTitle:dic[@"Title"] forState:UIControlStateNormal];
-                [itemBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                [itemBtn setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
                 [itemBtn setImage:[UIImage imageNamed:dic[@"Image"]] forState:UIControlStateNormal];
                 
                 
                 [itemBtn setTitle:dic[@"Title"] forState:UIControlStateHighlighted];
-                [itemBtn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+                [itemBtn setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateHighlighted];
                 [itemBtn setImage:[UIImage imageNamed:dic[@"Image"]] forState:UIControlStateHighlighted];
                 
                 [itemBtn setTitle:dic[@"Title"] forState:UIControlStateSelected];
-                [itemBtn setTitleColor:UIColorFromRGB(0x3375a4) forState:UIControlStateSelected];
+                [itemBtn setTitleColor:UIColorFromRGB(0x127aca) forState:UIControlStateSelected];
                 [itemBtn setImage:[UIImage imageNamed:dic[@"SelectImage"]] forState:UIControlStateSelected];
                 
                 
                 [itemBtn setTitle:dic[@"Title"] forState:UIControlStateSelected | UIControlStateHighlighted];
-                [itemBtn setTitleColor:UIColorFromRGB(0x3375a4) forState:UIControlStateSelected | UIControlStateHighlighted];
+                [itemBtn setTitleColor:UIColorFromRGB(0x127aca) forState:UIControlStateSelected | UIControlStateHighlighted];
                 [itemBtn setImage:[UIImage imageNamed:dic[@"SelectImage"]] forState:UIControlStateSelected | UIControlStateHighlighted];
                 
                 [itemBtn addTarget:self action:@selector(tabBtnClick:) forControlEvents:UIControlEventTouchUpInside];

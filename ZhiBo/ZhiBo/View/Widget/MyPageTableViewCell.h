@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface MyPageTableViewCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
 
+@property (weak, nonatomic) IBOutlet UILabel *nicknameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fensiLabel;
 @end

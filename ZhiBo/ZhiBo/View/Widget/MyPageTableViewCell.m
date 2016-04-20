@@ -12,7 +12,8 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
+    [self.avatarImageView.layer setCornerRadius:self.avatarImageView.frame.size.width/2];
+    self.avatarImageView.clipsToBounds = true;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

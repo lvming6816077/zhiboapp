@@ -34,7 +34,7 @@
     self.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, titleViewHeight)];
     UILabel *myLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth/2, titleViewHeight)];
     myLabel.text = @"我的通知";
-    myLabel.textColor = UIColorFromRGB(0x7d7d7d);
+    myLabel.textColor = UIColorFromRGB(0x666666);
     [myLabel setFont:[UIFont systemFontOfSize:14.0f]];
     myLabel.textAlignment = NSTextAlignmentCenter;
     [myLabel setTag:100 + 1];
@@ -49,7 +49,7 @@
     sysLabel.text = @"系统消息";
     [sysLabel setFont:[UIFont systemFontOfSize:14.0f]];
     sysLabel.textAlignment = NSTextAlignmentCenter;
-    sysLabel.textColor = UIColorFromRGB(0x7d7d7d);
+    sysLabel.textColor = UIColorFromRGB(0x666666);
     [sysLabel setTag:100 + 2];
     sysLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changeTab:)];

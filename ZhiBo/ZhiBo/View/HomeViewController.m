@@ -38,6 +38,8 @@ static NSString const *PUBLISH = @"PublishViewController";
 -(void) viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+
+    [self.tabBar setValue:@(YES) forKeyPath:@"_hidesShadow"];
     self.tabView = [[HomeTarBarView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, self.tabBar.frame.size.height)];
     self.tabBar.layer.borderWidth = 0;
 
@@ -46,6 +48,7 @@ static NSString const *PUBLISH = @"PublishViewController";
     for (UIView *v in self.tabBar.subviews) {
         [v removeFromSuperview];
     }
+
     [self.tabBar addSubview:self.tabView];
 
 }
