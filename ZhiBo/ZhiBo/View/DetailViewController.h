@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface DetailViewController : UIViewController
+#import "DetailTableViewCell.h"
+@interface DetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DetailTableViewCellDelegate>
 
 @end

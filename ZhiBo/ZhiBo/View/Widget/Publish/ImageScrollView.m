@@ -62,14 +62,13 @@
 -(void)imageViewClk:(UITapGestureRecognizer*) ges {
     UIImageView *currentImage = (UIImageView*)[ges view];
     _browser = [[IDMPhotoBrowser alloc] initWithPhotos:_idmPhotos];
-//    _browser.usePopAnimation = YES;
-    _browser.scaleImage = currentImage.image;
     _browser.displayCounterLabel = YES;
     _browser.displayActionButton = NO;
     _browser.displayDoneButton = NO;
     _browser.displayArrowButton = NO;
 //    _browser.usePopAnimation = true;
-//    _browser.forceHideStatusBar = true;
+    _browser.forceHideStatusBar = false;
+    _browser.autoHideInterface = NO;
 
     [_browser setInitialPageIndex:currentImage.tag-100];
     PublishViewController *vc = (PublishViewController*)[self.superview.superview nextResponder];
