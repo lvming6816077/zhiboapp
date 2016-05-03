@@ -20,6 +20,7 @@
 @property(nonatomic,strong) UIScrollView *scrollView;
 @property(nonatomic,strong) UIView *bottomOptionView;
 @property(nonatomic,strong) UILabel *placeHolder;
+
 @end
 
 @implementation PublishViewController
@@ -85,6 +86,7 @@
     
     [titleInput becomeFirstResponder];
     
+    
 
     [self.scrollView addSubview:titleInput];
     [self.scrollView addSubview:dividerLineView];
@@ -96,11 +98,11 @@
     self.placeHolder = [[UILabel alloc] init];
     self.placeHolder.frame = CGRectMake(4, 7, 100, 20);
     
-    self.placeHolder.enabled = false;
+//    self.placeHolder.enabled = false;
     self.placeHolder.backgroundColor = [UIColor clearColor];
-    self.placeHolder.text = @"正文内容";
-    self.placeHolder.textColor = UIColorFromRGB(0xc7c7cd);
-    self.placeHolder.font = [UIFont systemFontOfSize:15.0f];
+    self.placeHolder.text = @"正文内容";//UIColorFromRGB(0xc3c3c9);
+    self.placeHolder.textColor = UIColorFromRGB(0xC7C7CD);
+    self.placeHolder.font = [UIFont boldSystemFontOfSize:15.0f];
 //    placeHolder.backgroundColor = [UIColor blueColor];
     [textView addSubview:self.placeHolder];
     textView.delegate = self;

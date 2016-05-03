@@ -198,14 +198,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
         
     }
 }
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    
-//    
-//    
-//
-//    
-//}
+
 -(NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }

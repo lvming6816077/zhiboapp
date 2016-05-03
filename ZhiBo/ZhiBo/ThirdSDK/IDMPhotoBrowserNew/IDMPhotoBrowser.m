@@ -19,6 +19,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 // Private
 @interface IDMPhotoBrowser () {
+    
+
 	// Data
     NSMutableArray *_photos;
 
@@ -145,6 +147,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (id)init {
     if ((self = [super init])) {
+
+        
         // Defaults
         self.hidesBottomBarWhenPushed = YES;
         _currentPageIndex = 0;
@@ -187,10 +191,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             self.automaticallyAdjustsScrollViewInsets = NO;
 
         _applicationWindow = [[[UIApplication sharedApplication] delegate] window];
+        
+        
+//        [self performSelector:@selector(hideStatus) withObject:self afterDelay:0.02];
 
 		if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
 		{
-			self.modalPresentationStyle = UIModalPresentationCustom;
+//            self.wantsFullScreenLayout
+			self.modalPresentationStyle = UIModalPresentationOverFullScreen;
 			self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
             self.modalPresentationCapturesStatusBarAppearance = YES;
 		}
@@ -223,6 +231,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view {
     if ((self = [self init])) {
+
 		_photos = [[NSMutableArray alloc] initWithArray:photosArray];
         _senderViewForAnimation = view;
 	}
@@ -512,11 +521,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Controls
     [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
+    
+    
 }
 
 - (void)dismissPhotoBrowserAnimated:(BOOL)animated {
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-
+    
     if ([_delegate respondsToSelector:@selector(photoBrowser:willDismissAtPageIndex:)])
         [_delegate photoBrowser:self willDismissAtPageIndex:_currentPageIndex];
 
@@ -570,7 +581,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
+    
 	_pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
+
     //_pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	_pagingScrollView.pagingEnabled = YES;
 	_pagingScrollView.delegate = self;
@@ -687,10 +700,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Update UI
 	[self hideControlsAfterDelay];
+    
+    [self hideStatus];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    
     _viewIsActive = YES;
 }
 
@@ -714,27 +731,30 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return _useWhiteBackgroundColor ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
 }
 
-- (BOOL)prefersStatusBarHidden {
-    if(_forceHideStatusBar) {
-        return YES;
-    }
+//- (BOOL)prefersStatusBarHidden {
+//    if(_forceHideStatusBar) {
+//        return YES;
+//    }
+//    
+//    
+//
+//    if(_isdraggingPhoto) {
+//        if(_statusBarOriginallyHidden) {
+//            return YES;
+//        }
+//        else {
+//            return NO;
+//        }
+//    }
+//    else {
+//        return _hideStatus;
+////        return [self areControlsHidden];
+//    }
+//}
 
-    if(_isdraggingPhoto) {
-        if(_statusBarOriginallyHidden) {
-            return YES;
-        }
-        else {
-            return NO;
-        }
-    }
-    else {
-        return [self areControlsHidden];
-    }
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-	return UIStatusBarAnimationFade;
-}
+//- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+//	return UIStatusBarAnimationFade;
+//}
 
 #pragma mark - Layout
 
@@ -848,7 +868,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self tilePages];
     _performingLayout = NO;
 
-	if(! _disableVerticalSwipe)
+	if(! _disableVerticalSwipe && NO)
 		[self.view addGestureRecognizer:_panGesture];
 }
 
@@ -1251,10 +1271,24 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)hideControls      { if(_autoHide && _autoHideInterface) [self setControlsHidden:YES animated:YES permanent:NO]; }
 - (void)toggleControls    {
     // 暂时注释掉
-//    [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO];
-    [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:0.1];
-}
+    
+//    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 
+
+
+    
+    [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:0.1];
+    
+    
+    
+    
+}
+-(void)showStatus {
+    _applicationWindow.windowLevel = UIWindowLevelNormal;
+}
+-(void)hideStatus {
+    _applicationWindow.windowLevel = UIWindowLevelStatusBar;
+}
 
 #pragma mark - Properties
 
@@ -1286,6 +1320,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [self prepareForClosePhotoBrowser];
         [self dismissPhotoBrowserAnimated:YES];
     }
+    [self showStatus];
+//    [self performSelector:@selector(showStatus) withObject:self afterDelay:0.2];
 }
 
 - (void)actionButtonPressed:(id)sender {
