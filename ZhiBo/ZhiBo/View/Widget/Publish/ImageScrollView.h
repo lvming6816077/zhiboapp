@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+//@protocol ImageScrollViewDelegate <NSObject>
+//
+//- (void)hasAddImage:(UIImageView*)currentImage;
+//
+//@end
 
 @interface ImageScrollView : UIScrollView
 -(void)addImage:(NSArray*)imgs;
+-(NSArray*) getCurrentImages;
 @end

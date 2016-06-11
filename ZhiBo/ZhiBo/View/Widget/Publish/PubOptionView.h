@@ -24,4 +24,5 @@ UINavigationControllerDelegate>
 @property(nonatomic,strong) NSArray *optionList;
 
 -(instancetype) initWithFrame:(CGRect)frame andOption:(NSArray*)optionList;
+-(NSDictionary*) getCurrentPosition;
 @end

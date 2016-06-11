@@ -15,6 +15,7 @@
 #import "HomeTarBarView.h"
 #import "Defines.h"
 #import "BaseNavigationViewController.h"
+#import "LoginViewController.h"
 static NSString const *PUBLISH = @"PublishViewController";
 @interface HomeViewController ()<HomeTabBarDelegate>
 @property(nonatomic,strong)HomeTarBarView *tabView;
@@ -111,8 +112,17 @@ static NSString const *PUBLISH = @"PublishViewController";
 
 }
 -(void) didSelect:(NSInteger)pageIndex {
+//    NSLog(@"%d", pageIndex);
+    if (pageIndex == 3) {
+        LoginViewController *loginVC = [[LoginViewController alloc] init];
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:loginVC];
+        [self presentViewController:navController animated:YES completion:NULL];
 
-    self.selectedIndex = pageIndex;
+    } else {
+        self.selectedIndex = pageIndex;
+    }
+    
 }
 
 -(void) publishClick {

@@ -19,8 +19,9 @@
     NSInteger _imageCount;
     ALAssetsLibrary *_lib;
     NSMutableArray *_idmPhotos;
-    PublishViewController *_pvc;
+//    PublishViewController *_pvc;
     IDMPhotoBrowser *_browser;
+    NSMutableArray *_images;
     
 }
 
@@ -32,8 +33,9 @@
         _lib = [ALAssetsLibrary new];
         self.showsHorizontalScrollIndicator = false;
         _idmPhotos = [[NSMutableArray alloc] init];
-        _pvc = [[PublishViewController alloc] init];
-//        _browser = 
+        _images = [[NSMutableArray alloc] init];
+//        _pvc = [[PublishViewController alloc] init];
+//        _browser =
     }
     return self;
 }
@@ -56,7 +58,14 @@
     
     
     IDMPhoto *photo = [IDMPhoto photoWithImage:image];
+    
+    [_images addObject:image];
     [_idmPhotos addObject:photo];
+
+}
+-(NSArray*)getCurrentImages{
+    
+    return _images;
 
 }
 -(void)imageViewClk:(UITapGestureRecognizer*) ges {

@@ -26,7 +26,7 @@
 @property(nonatomic,strong) NSMutableDictionary *heightList; // cache cell height
 @end
 
-NSString * const xcellIdentifier = @"FindTableViewCell";
+NSString * const xcellIdentifier = @"FindTableViewCell"; // to do why must be x cellidentifier
 
 
 @implementation FindViewController
@@ -264,9 +264,7 @@ NSString * const xcellIdentifier = @"FindTableViewCell";
     _browser.forceHideStatusBar = NO;
     _browser.autoHideInterface = NO;
     [_browser setInitialPageIndex:currentImage.tag-100];
-    //    PublishViewController *vc = (PublishViewController*)[self.superview.superview nextResponder];
-    
-//    _browser.modalPresentationStyle = UIModalPresentationFullScreen;
+
     [self presentViewController:_browser animated:YES completion:nil ];
     
 }

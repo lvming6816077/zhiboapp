@@ -11,6 +11,8 @@
 #import "PhotoPickerViewController.h"
 #import "PubOptionView.h"
 #import "ImageScrollView.h"
+#import "AFNetworking.h"
+
 
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
 #define OptionBarHeight 130
@@ -20,6 +22,11 @@
 @property(nonatomic,strong) UIScrollView *scrollView;
 @property(nonatomic,strong) UIView *bottomOptionView;
 @property(nonatomic,strong) UILabel *placeHolder;
+@property(nonatomic,strong) ImageScrollView *imageScrollView;
+@property(nonatomic,strong) UITextField *titleInput;
+@property(nonatomic,strong) UITextView *textView;
+@property(nonatomic,strong) PubOptionView *pubOptionView;
+
 
 @end
 
@@ -70,30 +77,32 @@
     
     [self.view addSubview:self.scrollView];
     
+    
+    
 }
 
 -(void) setTitleArea{
     
     // set title input
-    UITextField *titleInput = [[UITextField alloc] init];
-    titleInput.frame = CGRectMake(15, 10, ScreenWidth-30, 25);
-    titleInput.placeholder = @"标题";
-    [titleInput setFont:[UIFont boldSystemFontOfSize:16.0f]];
+    self.titleInput = [[UITextField alloc] init];
+    self.titleInput.frame = CGRectMake(15, 10, ScreenWidth-30, 25);
+    self.titleInput.placeholder = @"标题";
+    [self.titleInput setFont:[UIFont boldSystemFontOfSize:16.0f]];
 
     // set border line
     UIView *dividerLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 45, ScreenWidth, .5f)];
     [dividerLineView setBackgroundColor:UIColorFromRGB(0xcccccc)];
     
-    [titleInput becomeFirstResponder];
+    [self.titleInput becomeFirstResponder];
     
     
 
-    [self.scrollView addSubview:titleInput];
+    [self.scrollView addSubview:self.titleInput];
     [self.scrollView addSubview:dividerLineView];
 
 }
 -(void) setTextArea{
-    UITextView *textView = [[UITextView alloc] init];
+    self.textView = [[UITextView alloc] init];
     
     self.placeHolder = [[UILabel alloc] init];
     self.placeHolder.frame = CGRectMake(4, 7, 100, 20);
@@ -104,19 +113,19 @@
     self.placeHolder.textColor = UIColorFromRGB(0xC7C7CD);
     self.placeHolder.font = [UIFont boldSystemFontOfSize:15.0f];
 //    placeHolder.backgroundColor = [UIColor blueColor];
-    [textView addSubview:self.placeHolder];
-    textView.delegate = self;
-    textView.frame = CGRectMake(12, 46, ScreenWidth-24, self.scrollView.frame.size.height-46);
-    textView.text = @"";
-    textView.scrollEnabled = false;
+    [self.textView addSubview:self.placeHolder];
+    self.textView.delegate = self;
+    self.textView.frame = CGRectMake(12, 46, ScreenWidth-24, self.scrollView.frame.size.height-46);
+    self.textView.text = @"";
+    self.textView.scrollEnabled = false;
 //    textView.backgroundColor = [UIColor redColor];
-    textView.contentSize = CGSizeMake(0,0);
+    self.textView.contentSize = CGSizeMake(0,0);
 
-    textView.font = [UIFont boldSystemFontOfSize:15.0f];
-    [textView setEditable:true];
+    self.textView.font = [UIFont boldSystemFontOfSize:15.0f];
+    [self.textView setEditable:true];
     
-    textView.scrollEnabled = true;
-    [self.scrollView addSubview:textView];
+    self.textView.scrollEnabled = true;
+    [self.scrollView addSubview:self.textView];
 
 }
 
@@ -125,16 +134,16 @@
     
     CGFloat pubOptionViewHeight = 50;
     CGFloat imageScrollViewHeight = 80;
-    PubOptionView *pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, imageScrollViewHeight, ScreenWidth, pubOptionViewHeight) andOption:@[@"chooseImage",@"chooseAddress"]];
+    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, imageScrollViewHeight, ScreenWidth, pubOptionViewHeight) andOption:@[@"chooseImage",@"chooseAddress"]];
     
-    ImageScrollView *imageScrollView = [[ImageScrollView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, imageScrollViewHeight)];
-    [imageScrollView setTag:101];
+    self.imageScrollView = [[ImageScrollView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, imageScrollViewHeight)];
+    [self.imageScrollView setTag:101];
 //    imageScrollView.backgroundColor = [UIColor blueColor];
 
     self.bottomOptionView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-OptionBarHeight, ScreenWidth, OptionBarHeight)];
     
-    [self.bottomOptionView addSubview:pubOptionView];
-    [self.bottomOptionView addSubview:imageScrollView];
+    [self.bottomOptionView addSubview:self.pubOptionView];
+    [self.bottomOptionView addSubview:self.imageScrollView];
     [self.view addSubview:self.bottomOptionView];
     
     
@@ -150,7 +159,64 @@
         
     }];
 }
+//-(void) clickPub:(UIButton *)btn {
+//    NSArray *images = [self.imageScrollView getCurrentImages];
+//    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:@"http://10.66.69.180:8888/zhibo/index.php/post/createPost" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+//        for (int i = 0; i<images.count; i++) {
+//            UIImage *uploadImage = images[i];
+//            [formData appendPartWithFileData:UIImagePNGRepresentation(uploadImage) name:@"file" fileName:@"test.jpg" mimeType:@"image/jpg"];
+//        }
+//    } error:nil];
+//    
+//    AFHTTPRequestOperation *opration = [[AFHTTPRequestOperation alloc]initWithRequest:request];
+//    
+//    [opration setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+////        NSString *str = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//        NSMutableDictionary *dic = [(NSDictionary*)responseObject valueForKey:@"content"];
+//        NSLog(@"%@",dic);
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        
+//    }];
+//    
+//    [opration start];
+//}
+
 -(void) clickPub:(UIButton *)btn {
+    [self.view endEditing:YES];
+    [self showLoading];
+    
+    NSArray *images = [self.imageScrollView getCurrentImages];
+    
+    NSString *title = self.titleInput.text;
+    NSString *content = self.textView.text;
+    NSString *longitude = [self.pubOptionView getCurrentPosition][@"longitude"];
+    NSString *latitude = [self.pubOptionView getCurrentPosition][@"latitude"];
+    NSString *city = [self.pubOptionView getCurrentPosition][@"name"];
+    NSString *address = [self.pubOptionView getCurrentPosition][@"address"];
+    
+    
+    NSDictionary *dic = @{@"title":title,
+                          @"content":content,
+                          @"longitude":longitude,
+                          @"latitude":latitude,
+                          @"city":city,
+                          @"address":address};
+    
+    AFHTTPRequestOperationManager *httpManager = [AFHTTPRequestOperationManager manager];
+//    httpManager.responseSerializer = [AFJSONResponseSerializer serializer];
+//    httpManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+    [httpManager POST:@"http://10.66.69.46:8888/zhibo/index.php/post/createPost" parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        for (int i = 0; i<images.count; i++) {
+            UIImage *uploadImage = images[i];
+            [formData appendPartWithFileData:UIImageJPEGRepresentation(uploadImage,0.5) name:images.count > 1 ? @"file[]" : @"file" fileName:[NSString stringWithFormat:@"%dname.jpg",i] mimeType:@"image/jpeg"];
+        }
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSMutableDictionary *dic = [(NSDictionary*)responseObject valueForKey:@"content"];
+        NSLog(@"%@",dic);
+        [self hideLoading];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [self hideLoading];
+    }];
     
 }
 

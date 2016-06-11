@@ -93,6 +93,15 @@
 
 
 }
+-(NSDictionary*) getCurrentPosition{
+    if (!_currentPosition) {
+        return @{@"longitude":@"",
+                @"latitude":@"",
+                 @"name":@"",
+                 @"address":@""};
+    }
+    return _currentPosition;
+}
 -(void) openView:(UIButton*) btn {
     
     if ([[btn currentTitle] isEqualToString:@"chooseImage"]) {
@@ -173,14 +182,36 @@
     ImageScrollView *imageScroll = (ImageScrollView*)[self.superview viewWithTag:101];
     if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-
+        CGSize imagesize = image.size;
+        imagesize.height = ScreenHeight*2;
+        imagesize.width = ScreenWidth*2;
+        //对图片大小进行压缩--
+        image = [self imageWithImage:image scaledToSize:imagesize];
+//        NSData *imageData = UIImageJPEGRepresentation(imageNew,0.00001);
         [imageScroll addImage:@[image]];
         [picker dismissViewControllerAnimated:true completion:nil];
     }
     
 }
 
-
+-(UIImage*)imageWithImage:(UIImage*)image scaledToSize:(CGSize)newSize
+{
+    // Create a graphics image context
+    UIGraphicsBeginImageContext(newSize);
+    
+    // Tell the old image to draw in this new context, with the desired
+    // new size
+    [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
+    
+    // Get the new image from the context
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    // End the context
+    UIGraphicsEndImageContext();
+    
+    // Return the new image.
+    return newImage;
+}
 #pragma mark - DNImagePickerControllerDelegate
 
 - (void)dnImagePickerController:(DNImagePickerController *)imagePickerController sendImages:(NSArray *)imageAssets isFullImage:(BOOL)fullImage andAssets:(NSArray*) asstesImages

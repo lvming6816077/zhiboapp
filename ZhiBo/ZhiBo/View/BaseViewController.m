@@ -7,9 +7,11 @@
 //
 
 #import "BaseViewController.h"
+#import "MBProgressHUD.h"
+
 
 @interface BaseViewController ()
-
+@property(nonatomic,strong) MBProgressHUD *hud;
 @end
 
 @implementation BaseViewController
@@ -36,6 +38,17 @@
 //    self.navigationController.navigationBar.translucent = true;
 //    self.navigationController.navigationItem setl
 //    [btnRight setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:15.0f], NSFontAttributeName,nil] forState:UIControlStateNormal];
+}
+
+-(void) showLoading {
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = @"发表中...";
+//    self.hud.dimBackground = YES;
+//    self.hud.detailsLabelText = @"Test detail";
+}
+-(void) hideLoading {
+    [self.hud hide:YES];
+    
 }
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];

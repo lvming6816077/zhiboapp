@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "HomeTarBarView.h"
 @interface BaseViewController : UIViewController
-
+-(void) showLoading;
+-(void) hideLoading;
 @end

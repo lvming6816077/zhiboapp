@@ -15,6 +15,8 @@
 #import "IDMPhoto.h"
 #import "IDMPhotoBrowser.h"
 
+#import "DetailTopView.h"
+
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
 
 NSString * const cellIdentifier = @"DetailTableViewCell";
@@ -24,6 +26,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,strong) NSMutableArray<DetailTableViewCellData*> *dataList;
 @property(nonatomic,strong) NSMutableDictionary *heightList;
+@property(nonatomic,strong) DetailTopView *topView;
 @end
 
 @implementation DetailViewController
@@ -42,8 +45,15 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 //    self.navigationController.navigationBar.translucent = true;
     
     [self initTableView];
+    
+    [self initTopView];
 }
 
+-(void) initTopView{
+    
+    self.topView = [[DetailTopView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 152)];
+    self.tableView.tableHeaderView = self.topView;
+}
 
 -(void) initTableView{
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight)];
