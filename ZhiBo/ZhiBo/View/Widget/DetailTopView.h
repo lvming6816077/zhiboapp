@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DetailTopData.h"
+
+
 
 @interface DetailTopView : UIView
-
+-(instancetype) initWithFrame:(CGRect)frame andDetailData:(DetailTopData*) data;
 @end

@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *descLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *likeImageView;
 @property (weak, nonatomic) IBOutlet UILabel *likecountLabel;
+@property (weak, nonatomic) IBOutlet UILabel *commentcountLabel;
 
 @property (weak, nonatomic) IBOutlet UIView *imageContentView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageContentHeight;

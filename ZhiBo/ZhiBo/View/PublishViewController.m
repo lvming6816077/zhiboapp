@@ -12,10 +12,14 @@
 #import "PubOptionView.h"
 #import "ImageScrollView.h"
 #import "AFNetworking.h"
+#import "HttpUtil.h"
+#import "LoginUtil.h"
 
 
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
 #define OptionBarHeight 130
+
+
 
 
 @interface PublishViewController ()
@@ -28,13 +32,36 @@
 @property(nonatomic,strong) PubOptionView *pubOptionView;
 
 
+@property(nonatomic,assign) PubType pubType;
+@property(nonatomic,strong) NSString *pid;
 @end
 
 @implementation PublishViewController
+{
+    BOOL _isPub;
+}
 
+
+-(instancetype) initWithPubType:(PubType) type andOption:(NSDictionary*) dic {
+    if (self == [super init]) {
+    
+        self.pubType = type;
+        _isPub = self.pubType == PubTypePost;
+        
+        self.pid = dic[@"pid"];
+    }
+    
+    return self;
+
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"发表";
+    if (self.pubType == PubTypePost) {
+        self.title = @"发表";
+    } else {
+        self.title = @"回复";
+    }
+    
 //    self.extendedLayoutIncludesOpaqueBars = true;
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
@@ -42,8 +69,10 @@
     
     [self initContainerView];
     
-    [self setTitleArea];
-
+    if (self.pubType == PubTypePost) {
+        [self setTitleArea];
+    }
+    
     [self setTextArea];
 
     [self setPubOption];
@@ -60,7 +89,14 @@
     self.navigationItem.leftBarButtonItem = btnLeft;
     
     //set right btn
-    UIBarButtonItem *btnRight = [[UIBarButtonItem alloc] initWithTitle:@"发表" style:UIBarButtonItemStylePlain target:self action:@selector(clickPub:)];
+    UIBarButtonItem *btnRight;
+    
+    if (self.pubType == PubTypePost) {
+        btnRight = [[UIBarButtonItem alloc] initWithTitle:@"发表"  style:UIBarButtonItemStylePlain target:self action:@selector(clickPub:)];
+    } else {
+        btnRight = [[UIBarButtonItem alloc] initWithTitle:@"回复"  style:UIBarButtonItemStylePlain target:self action:@selector(clickReply:)];
+    }
+    
     btnRight.tintColor = [UIColor whiteColor];
     [btnRight setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:15.0f], NSFontAttributeName,nil] forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = btnRight;
@@ -102,7 +138,9 @@
 
 }
 -(void) setTextArea{
+    CGFloat y = _isPub ? 46 : 14;
     self.textView = [[UITextView alloc] init];
+//    self.textView.backgroundColor = [UIColor redColor];
     
     self.placeHolder = [[UILabel alloc] init];
     self.placeHolder.frame = CGRectMake(4, 7, 100, 20);
@@ -115,7 +153,7 @@
 //    placeHolder.backgroundColor = [UIColor blueColor];
     [self.textView addSubview:self.placeHolder];
     self.textView.delegate = self;
-    self.textView.frame = CGRectMake(12, 46, ScreenWidth-24, self.scrollView.frame.size.height-46);
+    self.textView.frame = CGRectMake(12, y, ScreenWidth-24, self.scrollView.frame.size.height-y);
     self.textView.text = @"";
     self.textView.scrollEnabled = false;
 //    textView.backgroundColor = [UIColor redColor];
@@ -126,11 +164,16 @@
     
     self.textView.scrollEnabled = true;
     [self.scrollView addSubview:self.textView];
+    
+    
+    if (!_isPub) {
+        [self.textView becomeFirstResponder];
+    }
 
 }
 
 
--(void) setPubOption{
+-(void) setPubOption {
     
     CGFloat pubOptionViewHeight = 50;
     CGFloat imageScrollViewHeight = 80;
@@ -180,32 +223,29 @@
 //    
 //    [opration start];
 //}
-
--(void) clickPub:(UIButton *)btn {
+-(void) clickReply:(UIButton *)btn {
     [self.view endEditing:YES];
     [self showLoading];
     
     NSArray *images = [self.imageScrollView getCurrentImages];
     
-    NSString *title = self.titleInput.text;
     NSString *content = self.textView.text;
-    NSString *longitude = [self.pubOptionView getCurrentPosition][@"longitude"];
-    NSString *latitude = [self.pubOptionView getCurrentPosition][@"latitude"];
-    NSString *city = [self.pubOptionView getCurrentPosition][@"name"];
-    NSString *address = [self.pubOptionView getCurrentPosition][@"address"];
+
     
     
-    NSDictionary *dic = @{@"title":title,
+    NSString *uid = [LoginUtil getCurrentUserId];
+    NSString *pid = self.pid;
+    
+    if (!uid || !pid) return;
+    
+    NSDictionary *dic = @{
                           @"content":content,
-                          @"longitude":longitude,
-                          @"latitude":latitude,
-                          @"city":city,
-                          @"address":address};
+                          @"uid":uid,
+                          @"pid":pid};
     
-    AFHTTPRequestOperationManager *httpManager = [AFHTTPRequestOperationManager manager];
-//    httpManager.responseSerializer = [AFJSONResponseSerializer serializer];
-//    httpManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-    [httpManager POST:@"http://10.66.69.46:8888/zhibo/index.php/post/createPost" parameters:dic constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    
+    
+    [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/reply/createReply", BaseCgiUrl]parameters:dic formBody:^(id<AFMultipartFormData> formData) {
         for (int i = 0; i<images.count; i++) {
             UIImage *uploadImage = images[i];
             [formData appendPartWithFileData:UIImageJPEGRepresentation(uploadImage,0.5) name:images.count > 1 ? @"file[]" : @"file" fileName:[NSString stringWithFormat:@"%dname.jpg",i] mimeType:@"image/jpeg"];
@@ -214,6 +254,54 @@
         NSMutableDictionary *dic = [(NSDictionary*)responseObject valueForKey:@"content"];
         NSLog(@"%@",dic);
         [self hideLoading];
+        
+        [self back:nil];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [self hideLoading];
+    }];
+
+}
+-(void) clickPub:(UIButton *)btn {
+    [self.view endEditing:YES];
+    [self showLoading];
+    
+    NSArray *images = [self.imageScrollView getCurrentImages];
+    
+    NSString *title = self.titleInput.text;
+    NSString *content = self.textView.text;
+    NSDictionary *poi = [self.pubOptionView getCurrentPosition];
+    NSString *longitude = poi[@"longitude"];
+    NSString *latitude = poi[@"latitude"];
+    NSString *city = [NSString stringWithFormat:@"%@ %@",poi[@"city"],poi[@"name"]];
+    NSString *address = poi[@"address"];
+    
+    
+    NSString *uid = [LoginUtil getCurrentUserId];
+    
+    if (!uid) return;
+    
+    NSDictionary *dic = @{@"title":title,
+                          @"content":content,
+                          @"longitude":longitude,
+                          @"latitude":latitude,
+                          @"city":city,
+                          @"address":address,
+                          @"uid":uid};
+    
+    
+    
+    
+    [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/post/createPost", BaseCgiUrl]parameters:dic formBody:^(id<AFMultipartFormData> formData) {
+        for (int i = 0; i<images.count; i++) {
+            UIImage *uploadImage = images[i];
+            [formData appendPartWithFileData:UIImageJPEGRepresentation(uploadImage,0.5) name:images.count > 1 ? @"file[]" : @"file" fileName:[NSString stringWithFormat:@"%dname.jpg",i] mimeType:@"image/jpeg"];
+        }
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSMutableDictionary *dic = [(NSDictionary*)responseObject valueForKey:@"content"];
+        NSLog(@"%@",dic);
+        [self hideLoading];
+        
+        [self back:nil];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         [self hideLoading];
     }];

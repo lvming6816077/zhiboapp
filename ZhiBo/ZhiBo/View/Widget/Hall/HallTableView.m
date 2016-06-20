@@ -8,7 +8,7 @@
 
 #import "HallTableView.h"
 #import "Defines.h"
-#import "AFNetworking.h"
+#import "HttpUtil.h"
 #import "UIKit+AFNetworking.h"
 #import "MJRefresh.h"
 #import "DetailViewController.h"
@@ -16,20 +16,29 @@
 #import "PersonPageViewController.h"
 #import "HomeViewController.h"
 #import "PersonPageData.h"
-@interface HallTableView ()
+#import "LoginUtil.h"
+#import "DetailTopData.h"
+#import "DetailBottomData.h"
 
+@interface HallTableView ()
+@property(nonatomic,strong) NSMutableDictionary *heightList;
 @end
 
 
 @implementation HallTableView
+{
+    NSInteger _start;
+}
 
 
 
 -(instancetype) initWithFrame:(CGRect)frame {
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:true];
+//    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:true];
     if (self = [super initWithFrame:frame]) {
         self.delegate = self;
         self.dataSource = self;
+        
+        self.heightList = [[NSMutableDictionary alloc] init];
 
         
 //        UINib *cellNib = [UINib nibWithNibName:@"BoListViewCell" bundle:nil];
@@ -50,19 +59,20 @@
         self.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
 
             self.dataList = nil;
-
+            _start = 1;
             [self fetchData:@""];
             
         }];
         self.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
             
-            
+            _start = _start + 1;
             [self fetchData:@""];
+            
             
             [self.mj_footer endRefreshing];
         }];
         
-
+        _start = 0;
         [self fetchData:@""];
         
  
@@ -71,37 +81,42 @@
     return self;
 }
 
-
-
-
+-(NSString *)getParams {
+    
+    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@/post/getHallList", BaseCgiUrl]];
+    NSURLQueryItem *start = [NSURLQueryItem queryItemWithName:@"start" value:[NSString stringWithFormat:@"%d",MAX(_start, 1)]];
+    
+    NSURLQueryItem *uid = [NSURLQueryItem queryItemWithName:@"uid" value:[LoginUtil getCurrentUserId]];
+    
+    //    url = @"http://7jpp2v.com1.z0.glb.clouddn.com/test5.json";
+    
+    components.queryItems = @[start, uid];
+    
+    return [components string];
+}
 
 -(void) fetchData:(NSString*)url {
-
-    url = @"http://7jpp2v.com1.z0.glb.clouddn.com/test5.json";
-//    [UIApplication sharedApplication].networkActivityIndicatorVisible = true;
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",@"text/json",@"text/javascript", @"text/html", nil];
     
-//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager.requestSerializer setValue:@"http://buluo.qq.com/" forHTTPHeaderField:@"Referer"];
-    [manager.requestSerializer setCachePolicy:NSURLRequestReturnCacheDataElseLoad];// to do
-    [manager GET:url
-      parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-          
-          NSDictionary *dic = [responseObject valueForKeyPath:@"result"];
-          [self dealWithData:dic];
-          [self.mj_header endRefreshing];
-          [self.mj_footer endRefreshing];
-          
-//          [UIApplication sharedApplication].networkActivityIndicatorVisible = false;
-      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"Error: %@", error);
-      }];
+    url = [self getParams];
+    
+    HttpUtil *util = [HttpUtil shareInstance];
+
+    
+    [util get:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject, BOOL isCache) {
+//        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        NSArray *array = [responseObject valueForKeyPath:@"content"];
+        [self dealWithData:array];
+        [self.mj_header endRefreshing];
+        [self.mj_footer endRefreshing];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    } cachePolicy:false ? CachePolicyThree : CachePolicyOne];
     
 }
--(void) dealWithData:(NSDictionary*) data{
+-(void) dealWithData:(NSArray*) data{
     
-    NSArray *arr = data[@"post"];
+    NSArray *arr = data;
     NSMutableArray *result = [NSMutableArray array];
     
     for(int i = 0 ; i < arr.count ; i++) {
@@ -115,14 +130,24 @@
 //        ncd.createtime = @"1月1日";
 //        ncd.picList = @[@"http://ugc.qpic.cn/gbar_pic/nrq5cicd8wFpuuJFTzZlR4xE4KqZjYlRtFVS4jH8qDOJ4iaNRibOpXqlQ/512",@"http://ugc.qpic.cn/gbar_pic/iaHgl1C4jmxtNJDEica7PMbZ1pXPuX440vnD8b6viaHyb6rBYIpwqbia6w/1000"];
 //        NSLog(@"%@",arr[i]);
-        ncd.avatarImageUrl = arr[i][@"avatarImageUrl"];
-        ncd.title = arr[i][@"title"];
-        ncd.desc = arr[i][@"desc"];
-        ncd.likecount = 1310;
-        ncd.address = arr[i][@"address"];
-        ncd.nickname = arr[i][@"nickname"];
-        ncd.createtime = arr[i][@"createtime"];
-        ncd.picList = arr[i][@"piclist"];
+        
+        
+        ncd.pid = [arr[i][@"id"] integerValue];
+        ncd.avatarImageUrl = arr[i][@"user_info"][@"user_pic"];
+        ncd.title = arr[i][@"post_title"];
+        ncd.desc = arr[i][@"post_content"];
+        ncd.likecount = [arr[i][@"post_like_count"] integerValue];
+        ncd.commentcount = [arr[i][@"post_comment_count"] integerValue];
+        ncd.address = arr[i][@"post_address"];
+        ncd.nickname = arr[i][@"user_info"][@"user_nickname"];
+        ncd.createtime = arr[i][@"post_time"];
+        NSMutableArray *pics = [NSMutableArray new];
+        NSArray *picss = arr[i][@"post_pic"];
+        
+        for (NSDictionary *dic in picss) {
+            [pics addObject:[NSString stringWithFormat:@"http://tenny.qiniudn.com/%@?imageView2/2/w/600",dic[@"key"]]];
+        }
+        ncd.picList = pics;
         [result addObject:ncd];
         
     }
@@ -167,15 +192,26 @@
 
 -(CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    CGFloat baseHeight = 190.0f;
-    BoListViewCellData *currentData = self.dataList[indexPath.row];
     
-    if (currentData.picList.count == 0) {
-        return baseHeight;
-    } else if (currentData.picList.count == 1) {
-        return baseHeight+((ScreenWidth-16)/2)+20;
+    NSString *key = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+    if ([self.heightList objectForKey:key]) {
+        return [[self.heightList objectForKey:key] floatValue];
     } else {
-        return baseHeight+((ScreenWidth-16)/2);
+        
+        CGFloat baseHeight = 183.0f;
+        CGFloat height = 0;
+        BoListViewCellData *currentData = self.dataList[indexPath.row];
+        if (currentData.picList.count == 0) {
+            height = baseHeight;
+        } else if (currentData.picList.count == 1) {
+            height = baseHeight+((ScreenWidth-16)/2)+20;
+        } else {
+            height = baseHeight+((ScreenWidth-16)/2);
+        }
+        
+        [self.heightList setValue:[NSString stringWithFormat:@"%g",height ] forKey:key];
+        return height;
+        
     }
 
 }
@@ -203,8 +239,26 @@
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    BoListViewCellData *currentData = self.dataList[indexPath.row];
+    
+    
+    DetailTopData *detaiToplData = [[DetailTopData alloc] init];
+    detaiToplData.nickname = currentData.nickname;
+    detaiToplData.createtime = currentData.createtime;
+    detaiToplData.title = currentData.title;
+    detaiToplData.pid = currentData.pid;
+    detaiToplData.avatarUrl = currentData.avatarImageUrl;
+    
+    DetailBottomData *detailBottomData = [[DetailBottomData alloc] init];
+    detailBottomData.likecount = currentData.likecount;
+    detailBottomData.pid = currentData.pid;
+    detailBottomData.sharecount = 0;
+    detailBottomData.savecount = 0;
+    
+    
     HallViewController *vc = (HallViewController*)[self.superview nextResponder];
-    DetailViewController *detail = [[DetailViewController alloc] init];
+    DetailViewController *detail = [[DetailViewController alloc] initWithDetailData:detaiToplData bottomData:detailBottomData];
 
     detail.hidesBottomBarWhenPushed = YES;
     [vc.navigationController pushViewController:detail animated:true];

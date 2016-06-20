@@ -11,6 +11,14 @@
 #import "Defines.h"
 #import "Masonry.h"
 #import "IDMPhotoBrowser.h"
+#import "CommentTopLineView.h"
+
+
+
+#define commentHeight 20
+#define commentStartY 29
+#define moreHeight 20
+#define moreY 9
 
 @implementation DetailTableViewCell
 {
@@ -18,6 +26,7 @@
     IDMPhotoBrowser *_browser;
     NSMutableArray *_idmPhotos;
     NSInteger _imageCount;
+//    CGFloat commentHeight;
     
 }
 
@@ -38,17 +47,26 @@
     [super setSelected:selected animated:animated];
     
 }
+
 -(void) initCommentContent:(NSArray*)commentList{
     for (UIView *view in self.commentContentView.subviews) {
         [view removeFromSuperview];
     }
+    
+//    CGFloat dividerHeight = 9;
+    UIView *topLine = [[CommentTopLineView alloc] initWithFrame:CGRectMake(-8, 0, ScreenWidth, 9)];
+    topLine.backgroundColor = [UIColor clearColor];
+    [self.commentContentView addSubview:topLine];
+    
+    
     CGFloat wrapWidth = ScreenWidth-16-8;
-    CGFloat y = 0;
-    CGFloat height = 20;
+    CGFloat y = commentStartY; // 评论起始y距离
+    CGFloat height = commentHeight;
     CGFloat contentMax = 100;
     CGFloat timeWidth = 70;
     CGFloat marginTop = 3;
     for(int i = 0 ; i < commentList.count ; i++) {
+        if (i > 2) break;
         UIView *wrap = [[UIView alloc] initWithFrame:CGRectMake(4, y, wrapWidth, height)];
         UILabel *nickLabel = [[UILabel alloc] init];
         
@@ -60,7 +78,7 @@
         [nickLabel setTextColor:UIColorFromRGB(0X275dac)];
         
         
-        contentLabel.text = @"我是好人啊";
+        contentLabel.text = @"我是好人啊阿啊阿啊阿啊阿啊阿啊阿啊";
         [contentLabel setTextColor:UIColorFromRGB(0x666666)];
         [contentLabel setFont:[UIFont systemFontOfSize:14]];
         
@@ -106,6 +124,26 @@
         y += height+marginTop;
         
     }
+    
+    if (commentList.count > 3) {
+        // 更多评论链接
+        
+        UILabel *moreComments = [[UILabel alloc] initWithFrame:CGRectMake(0, y+moreY, ScreenWidth, moreHeight)];
+        moreComments.text = @"查看更多3条回复";
+        
+        [moreComments setFont:[UIFont systemFontOfSize:13]];
+        [moreComments setTextColor:UIColorFromRGB(0X275dac)];
+        
+        moreComments.textAlignment = NSTextAlignmentCenter;
+        
+        [self.commentContentView addSubview:moreComments];
+        
+        y += moreY+moreHeight;
+        
+//        moreComments.backgroundColor = [UIColor redColor];
+    }
+    
+    
     self.commentContentViewHeight.constant = y+height;
 
 }
@@ -143,14 +181,21 @@
 }
 
 -(CGFloat) heightForComment:(NSArray*) commentList{
-    CGFloat y = 0;
-    CGFloat height = 20;
+    CGFloat y = commentStartY;
+    CGFloat height = commentHeight;
     CGFloat marginTop = 3;
-    for(int i = 0 ; i < commentList.count ; i++) {
-        
+    for(int i = 0 ; i < commentList.count && i < 3 ; i++) {
+
         y += height+marginTop;
         
     }
+    
+    if (commentList.count > 3) {
+        // 更多评论链接
+        
+        y += moreY+moreHeight;
+    }
+    
     return y+height;
 
 }
@@ -180,11 +225,14 @@
 }
 -(CGFloat) calcHeight:(DetailTableViewCellData*) data{
     
+    CGFloat otherHeight = 26;
+    
     return
     
+    otherHeight +
     [self heightForText:data.content]+
     [self heightForImage:data.picList]+
-    [self heightForComment:@[@"",@""]];
+    [self heightForComment:@[@"",@"",@"",@""]];
 
 }
 -(void) setCellData:(DetailTableViewCellData*)data{
@@ -203,7 +251,7 @@
     [self.avatarImageView setImageWithURL:[NSURL URLWithString:data.avatarImageUrl]];
     
     [self initImageContent:data.picList index:data.index];
-    NSArray *arr = @[@"",@""];
+    NSArray *arr = @[@"",@"",@"",@""];
     [self initCommentContent:arr];
 
     

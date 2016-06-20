@@ -85,7 +85,7 @@
     [self searchBarCancelButtonClicked:self.searchBar];
     
 }
--(bool) searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+-(BOOL) searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     self.tableView.frame = CGRectMake(0, 0, ScreenWidth, self.view.frame.size.height);
     [self.navigationController setNavigationBarHidden:true animated:true];
     [self.searchBar setShowsCancelButton:true animated:true];
@@ -217,7 +217,8 @@
             NSDictionary *dic = @{@"name":p.name,
                                   @"address":p.address,
                                   @"latitude":latitude,
-                                  @"longitude":longitude
+                                  @"longitude":longitude,
+                                  @"city":[NSString stringWithFormat:@"%@ %@",p.city,p.district]
                                   };
             
             

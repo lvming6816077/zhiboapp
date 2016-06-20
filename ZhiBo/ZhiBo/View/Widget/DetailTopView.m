@@ -9,11 +9,16 @@
 #import "DetailTopView.h"
 #import "UIKit+AFNetworking.h"
 #import "Defines.h"
-
+#import "DateUtil.h"
 
 @implementation DetailTopView
--(instancetype) initWithFrame:(CGRect)frame {
+{
+    DetailTopData *_detailData;
+}
+-(instancetype) initWithFrame:(CGRect)frame andDetailData:(DetailTopData*) data {
     if (self = [super initWithFrame:frame]) {
+        _detailData = data;
+        
         [self initAvatarTop];
         
         [self initContent];
@@ -27,7 +32,7 @@
 
 -(void) initAvatarTop{
     UIImageView *avatarImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 45, 45)];
-    [avatarImageView setImageWithURL:[NSURL URLWithString:@"http://q1.qlogo.cn/g?b=qq&k=8PxicUDh47ib5Ne9uX1Ad2LA&s=100&t=762"]];
+    [avatarImageView setImageWithURL:[NSURL URLWithString:_detailData.avatarUrl]];
     
     avatarImageView.layer.cornerRadius = avatarImageView.frame.size.width/2;
     avatarImageView.clipsToBounds = true;
@@ -39,7 +44,7 @@
     UILabel *nicknameLabel = [[UILabel alloc] init];
     UIFont *font = [UIFont systemFontOfSize:15.0];
     [nicknameLabel setFont:font];
-    nicknameLabel.text = @"你好世界啊";
+    nicknameLabel.text = _detailData.nickname;
     [nicknameLabel setNumberOfLines:1];
     
     CGFloat nicknameX = 60;
@@ -86,7 +91,7 @@
 
 -(void) initContent{
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 70, ScreenWidth-8, 50)];
-    titleLabel.text = @"直播领取驾照";
+    titleLabel.text = _detailData.title;
     
     [titleLabel setNumberOfLines:2];
     
@@ -99,7 +104,8 @@
 
 -(void) initTimeContent {
     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 125, 140, 20)];
-    timeLabel.text = @"2016-09-02 10:33";
+    
+    timeLabel.text = [DateUtil dateStr:[_detailData.createtime doubleValue] format:@"yyyy-MM-dd hh:mm"];
     
     timeLabel.textColor = UIColorFromRGB(0x999999);
     [timeLabel setFont:[UIFont systemFontOfSize:14]];

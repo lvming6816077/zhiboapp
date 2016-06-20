@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "DetailTableViewCell.h"
-@interface DetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DetailTableViewCellDelegate>
+#import "DetailTopData.h"
+#import "DetailBottomData.h"
 
+@interface DetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DetailTableViewCellDelegate>
+@property(nonatomic,strong) DetailTopData *detailTopData;
+@property(nonatomic,strong) DetailBottomData *detailBottomData;
+
+-(instancetype) initWithDetailData:(DetailTopData*)topData bottomData:(DetailBottomData*)bottomData;
 @end

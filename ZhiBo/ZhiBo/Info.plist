@@ -32,6 +32,16 @@
 				<string>tencent1105377239</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>zhiboapp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>zhiboappxxx</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>

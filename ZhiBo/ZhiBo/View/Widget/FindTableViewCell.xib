@@ -65,13 +65,6 @@
                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="zans" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-ld-PXB">
-                        <rect key="frame" x="281" y="212" width="24" height="24"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="24" id="PaJ-MC-72h"/>
-                            <constraint firstAttribute="height" constant="24" id="mCN-v8-stZ"/>
-                        </constraints>
-                    </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5555" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JiK-fb-Br7">
                         <rect key="frame" x="303" y="217" width="35.5" height="13"/>
                         <constraints>
@@ -99,6 +92,13 @@
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="zans" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-ld-PXB">
+                        <rect key="frame" x="281" y="212" width="24" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="24" id="PaJ-MC-72h"/>
+                            <constraint firstAttribute="height" constant="24" id="mCN-v8-stZ"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="JiK-fb-Br7" firstAttribute="leading" secondItem="TVY-ld-PXB" secondAttribute="trailing" constant="-2" id="69L-zJ-SLt"/>

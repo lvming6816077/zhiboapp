@@ -79,10 +79,14 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"MyPageTableViewCell" owner:self options:nil];
         
         MyPageTableViewCell *cell = (MyPageTableViewCell*)[nib objectAtIndex:0];
-
-        [cell.avatarImageView setImageWithURL:[NSURL URLWithString:@"http://ugc.qpic.cn/gbar_pic/S1enqicZz6UKiaEnjv7k7VT3bAHpoSluYPsh6SVicrLlF9IbXNQPlrKNA/"]];
         
-        [cell.nicknameLabel setText:@"吕小鸣"];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        
+        NSDictionary *userInfo = [userDefaults valueForKey:@"user_info"];
+        
+        [cell.avatarImageView setImageWithURL:[NSURL URLWithString:userInfo[@"user_pic"]]];
+        
+        [cell.nicknameLabel setText:userInfo[@"user_nickname"]];
         
         [cell.fensiLabel setText:@"粉丝：255"];
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;

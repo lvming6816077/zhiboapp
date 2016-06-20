@@ -213,6 +213,7 @@ NSString * const xcellIdentifier = @"FindTableViewCell"; // to do why must be x 
 }
 -(void) dealWithData:(NSDictionary*)dic {
     NSArray *posts = dic[@"posts"];
+//    NSArray *list = array;
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:posts.count];
     for (int i = 0 ; i < posts.count ; i++) {
         FindTableViewCellData *data = [[FindTableViewCellData alloc] init];

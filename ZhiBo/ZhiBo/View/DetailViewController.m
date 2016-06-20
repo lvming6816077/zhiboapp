@@ -8,7 +8,8 @@
 
 #import "DetailViewController.h"
 
-#import "AFNetworking.h"
+//#import "AFNetworking.h"
+#import "HttpUtil.h"
 #import "DetailTableViewCellData.h"
 #import "Defines.h"
 #import "MJRefresh.h"
@@ -16,8 +17,12 @@
 #import "IDMPhotoBrowser.h"
 
 #import "DetailTopView.h"
+#import "DetailBottomView.h"
+
 
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
+
+#define BottomViewHeight 44
 
 NSString * const cellIdentifier = @"DetailTableViewCell";
 
@@ -37,32 +42,42 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     NSInteger _imageCount;
     
 }
+
+-(instancetype) initWithDetailData:(DetailTopData*)topData bottomData:(DetailBottomData*)bottomData {
+
+    if (self == [super init]) {
+    
+        self.detailTopData = topData;
+        self.detailBottomData = bottomData;
+        
+    }
+    
+    return self;
+
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.title = @"详情页";
     self.view.backgroundColor = [UIColor whiteColor];
-//    self.navigationController.navigationBar.translucent = true;
     
     [self initTableView];
     
     [self initTopView];
+    
+    [self initBottomView];
 }
 
 -(void) initTopView{
     
-    self.topView = [[DetailTopView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 152)];
+    self.topView = [[DetailTopView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 152) andDetailData:self.detailTopData];
     self.tableView.tableHeaderView = self.topView;
 }
 
 -(void) initTableView{
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight)];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight-BottomViewHeight)];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-//    self.tableView.rowHeight = UITableViewAutomaticDimension;
-
-    
-//    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
     
     _imageCount = 0;
@@ -74,7 +89,6 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
     UINib *cellNib = [UINib nibWithNibName:cellIdentifier bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:cellIdentifier];
-//    [self registerClass:[BoListViewCell class] forCellReuseIdentifier:@"BoListViewCell"];
     
     
     
@@ -100,23 +114,16 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 -(void) fetchData:(NSString*)url {
     
     url = @"http://tenny.qiniudn.com/detailJson.json";
-
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
-
-    [manager.requestSerializer setCachePolicy:NSURLRequestReturnCacheDataElseLoad];// to do
-    [manager GET:url
-      parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-          
-          NSDictionary *dic = [responseObject valueForKeyPath:@"result"];
-          [self dealWithData:dic];
-          [self.tableView.mj_header endRefreshing];
-          [self.tableView.mj_footer endRefreshing];
-          
-
-      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"Error: %@", error);
-      }];
+    
+    [[HttpUtil shareInstance] get:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject, BOOL isCache) {
+        NSDictionary *dic = [responseObject valueForKeyPath:@"result"];
+        [self dealWithData:dic];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    } cachePolicy:CachePolicyOne];
+    
     
 }
 
@@ -181,9 +188,9 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
 }
 
-    
     //避免循环引用
 //    __weak typeof(self) weakSelf=self;
+
 
 #pragma mark - UITableViewDelegate
 -(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -214,14 +221,11 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 }
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    
     return self.dataList.count;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    
     
     DetailTableViewCellData *currentData = self.dataList[indexPath.row];
     
@@ -235,10 +239,35 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     return cell;
 
 }
+-(void) initBottomView {
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-BottomViewHeight, ScreenWidth, BottomViewHeight)];
+//        topBottomView.layer.borderWidth = 0.5;
+//        self.topBottomView.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7].CGColor;
+        [bottomView.layer setShadowColor:[UIColor blackColor].CGColor];
+        [bottomView.layer setShadowOffset:CGSizeMake(0, 1)];
+//    bottomView.layer setS
+//        self.topBottomView.layer.masksToBounds = false;
+//        self.topBottomView.layer.shouldRasterize = true;
+        bottomView.layer.shadowOpacity = .2;
+//        bottomView.layer.shadowRadius = 5;
+//        self.topBottomView.clipsToBounds = true;
+    bottomView.backgroundColor = [UIColor whiteColor];
+    
+    
+    
+//    DetailBottomData *bottomData = @{@"pid":[NSString stringWithFormat:@"%d",self.detailTopData.pid]};
+    
+    DetailBottomView *detailBottomView = [[DetailBottomView alloc] initWithData:self.detailBottomData andFrame:bottomView.bounds];
+    
+    [bottomView addSubview:detailBottomView];
+    
+    [self.view addSubview:bottomView];
 
+    
+    
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

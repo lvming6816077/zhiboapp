@@ -10,6 +10,8 @@
 #import "UIKit+AFNetworking.h"
 #import "Defines.h"
 #import "Masonry.h"
+#import "DateUtil.h"
+
 
 
 @implementation BoListViewCell
@@ -27,12 +29,16 @@
     self.avatarImageView.userInteractionEnabled = true;
     
     
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     
 //    self.contentView.translatesAutoresizingMaskIntoConstraints = false;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
+    
+    // customer style
 
 }
 -(void) initImageContent:(BoListViewCellData *)data {
@@ -41,7 +47,7 @@
         [view removeFromSuperview];
     }
     
-
+//    data.picList
     CGFloat wrapperWidth = ScreenWidth-16-16;
 //    NSLog(@"%d",data.picList.count);
 //    CGFloat wrapperHeight = 200;
@@ -70,7 +76,7 @@
         
         [self setImage:imageLeft url:data.picList[0]];
         [self setImage:imageRight url:data.picList[1]];
-    } else if (data.picList.count == 3) {
+    } else if (data.picList.count >= 3) {
 
         CGFloat smallWidth = (wrapperWidth-5)/4;
         UIImageView *image1 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, smallWidth*3, smallWidth*2+5)];
@@ -93,13 +99,19 @@
     
     
     self.nicknameLabel.text = data.nickname;
-    self.addressLabel.text = data.address;
-    self.createtimeLabel.text = data.createtime;
+    if (data.address.length > 0) {
+        self.addressLabel.text = data.address;
+    } else {
+        self.addressLabel.text = @"火星";
+    }
+//    self.addressLabel.text = data.address ? data.address : @"火星";
+    self.createtimeLabel.text = [DateUtil formatShortTime:[data.createtime doubleValue]];
     self.titleLabel.text = data.title;
 
     self.descLabel.text = data.desc;
     
-    self.likecountLabel.text = [NSString stringWithFormat:@"%ld",(long)data.likecount];
+    self.likecountLabel.text = [NSString stringWithFormat:@"%d",data.likecount];
+    self.commentcountLabel.text = [NSString stringWithFormat:@"%d",data.commentcount];
     
     [self initImageContent:data];
     [self setAvatarImage:data];
