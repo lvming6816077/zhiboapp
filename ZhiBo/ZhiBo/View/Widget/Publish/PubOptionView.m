@@ -41,6 +41,11 @@
 }
 
 -(void) initOptionView:(NSArray*)optionList {
+    
+    NSMutableDictionary *opt = [[NSMutableDictionary alloc] init];
+    for (int i = 0 ; i < optionList.count ; i++) {
+        [opt setObject:@"" forKey:optionList[i]];
+    }
 
 //    UIButton *addressBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 //    [addressBtn setTitle:@"address" forState:UIControlStateNormal];
@@ -57,31 +62,40 @@
 //        [self addSubview:chooseBtn];
 //    }
     
-    UIButton *chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-
-    chooseBtn.frame = CGRectMake(16, self.frame.size.height-26-8, 21 , 26);
-
-    [chooseBtn setImage:[UIImage imageNamed:@"chooseImage"] forState:UIControlStateNormal];
-    [chooseBtn addTarget:self action:@selector(showChooseImg) forControlEvents:UIControlEventTouchUpInside];
-
-    [self addSubview:chooseBtn];
+    if ([opt valueForKey:@"chooseImage"]) {
+        UIButton *chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        chooseBtn.frame = CGRectMake(16, self.frame.size.height-26-8, 21 , 26);
+        
+        [chooseBtn setImage:[UIImage imageNamed:@"chooseImage"] forState:UIControlStateNormal];
+        [chooseBtn addTarget:self action:@selector(showChooseImg) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self addSubview:chooseBtn];
+        
+    }
     
     
-    _chooseAddress = [UIButton buttonWithType:UIButtonTypeCustom];
-    _chooseAddress.frame = CGRectMake(self.frame.size.width-16-200, self.frame.size.height-26-8, 200, 26);
-
-
-    [_chooseAddress setImage:[UIImage imageNamed:@"chooseAddress"] forState:UIControlStateNormal];
-    [_chooseAddress setImage:[UIImage imageNamed:@"chooseAddressSelect"] forState:UIControlStateSelected];
-
-    [_chooseAddress setTitle:@"" forState:UIControlStateNormal];
-    _chooseAddress.titleLabel.font = [UIFont systemFontOfSize:13.0f];
-    _chooseAddress.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 3);
-    [_chooseAddress setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-    [_chooseAddress setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    if ([opt valueForKey:@"chooseAddress"]) {
+        _chooseAddress = [UIButton buttonWithType:UIButtonTypeCustom];
+        _chooseAddress.frame = CGRectMake(self.frame.size.width-16-200, self.frame.size.height-26-8, 200, 26);
+        
+        
+        [_chooseAddress setImage:[UIImage imageNamed:@"chooseAddress"] forState:UIControlStateNormal];
+        [_chooseAddress setImage:[UIImage imageNamed:@"chooseAddressSelect"] forState:UIControlStateSelected];
+        
+        [_chooseAddress setTitle:@"" forState:UIControlStateNormal];
+        _chooseAddress.titleLabel.font = [UIFont systemFontOfSize:13.0f];
+        _chooseAddress.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 3);
+        [_chooseAddress setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+        [_chooseAddress setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        
+        [_chooseAddress addTarget:self action:@selector(openPosition:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_chooseAddress];
+        
+    }
     
-    [_chooseAddress addTarget:self action:@selector(openPosition:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_chooseAddress];
+    
+    
 }
 -(void)openPosition:(UIButton*)btn {
     [[[UIApplication sharedApplication] keyWindow] endEditing:true];

@@ -12,13 +12,9 @@
 
 @implementation DetailBottomView
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+{
+    DetailBottomData *_detailBottomData;
 }
-*/
 
 -(instancetype) initWithData:(DetailBottomData*)data andFrame:(CGRect) frame{
     
@@ -26,13 +22,16 @@
     self.likeCountLabel.text = @"2";
 //    self.likeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 //    self.likeButton.imageEdgeInsets = UIEdgeInsetsMake(4 ,-4,4,4);
-
+    
     self.frame = frame;
+    
+    
+    _detailBottomData = data;
     return self;
 
 }
 - (IBAction)clickReply:(id)sender {
-    PublishViewController *pub = [[PublishViewController alloc] initWithPubType:PubTypeReply andOption:@{@"pid":@"1"}];
+    PublishViewController *pub = [[PublishViewController alloc] initWithPubType:PubTypeReply andOption:@{@"pid":[NSString stringWithFormat:@"%d",_detailBottomData.pid]}];
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:pub];
     

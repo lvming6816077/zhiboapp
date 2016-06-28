@@ -25,9 +25,9 @@
 #define HomeTabViewHeight  50
 #define NewsColumnWidth  60
 #define NewsTopViewHeight  36
-#define BaseCgiUrl @"http://zhibocgi.applinzi.com/index.php"
+//#define BaseCgiUrl @"http://zhibocgi.applinzi.com/index.php"
 
-//#define BaseCgiUrl @"http://localhost:8888/zhibocgi/index.php"
+#define BaseCgiUrl @"http://localhost:8888/zhibocgi/index.php"
 
 // utils
 

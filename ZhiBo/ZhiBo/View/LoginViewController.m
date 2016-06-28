@@ -52,6 +52,7 @@
     [self.qqLoginImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(qqLogin)]];
 }
 -(void)qqLogin {
+    
     self.tencentOAuth = [[TencentOAuth alloc] initWithAppId:@"1105377239" andDelegate:self];
     NSArray *permissions =  @[@"get_user_info", @"get_simple_userinfo", @"add_t"];
     [self.tencentOAuth authorize:permissions inSafari:NO];
@@ -115,7 +116,6 @@
 }
 // 用户第一次使用第三方登录时 注册用户信息
 - (void)doThirdSignUp:(NSDictionary*) dic {
-    
     
     
     [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/user/createUser",BaseCgiUrl] parameters:dic formBody:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {

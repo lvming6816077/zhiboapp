@@ -19,6 +19,8 @@
 #import "DetailTopView.h"
 #import "DetailBottomView.h"
 
+#import "DateUtil.h"
+
 
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
 
@@ -40,6 +42,10 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     IDMPhotoBrowser *_browser;
     NSMutableArray *_idmPhotos;
     NSInteger _imageCount;
+
+    NSInteger _start;
+
+
     
 }
 
@@ -95,28 +101,42 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         self.dataList = nil;
         self.dataList = [NSMutableArray new];
+        _start = 0;
         
         [self fetchData:@""];
         
     }];
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-
+        _start = _start + 1;
         [self fetchData:@""];
         
         
     }];
     
-    
+    _start = 0;
     [self fetchData:@""];
     [self.view addSubview:self.tableView];
 
+    
+}
+-(NSString *)getParams {
+    
+    NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@/reply/getReplyByPost", BaseCgiUrl]];
+    NSURLQueryItem *start = [NSURLQueryItem queryItemWithName:@"start" value:[NSString stringWithFormat:@"%d",MAX(_start, 1)]];
+    
+    NSURLQueryItem *pid = [NSURLQueryItem queryItemWithName:@"pid" value:@"7"];
+    
+    components.queryItems = @[start, pid];
+    
+    return [components string];
 }
 -(void) fetchData:(NSString*)url {
     
-    url = @"http://tenny.qiniudn.com/detailJson.json";
+//    url = @"http://tenny.qiniudn.com/detailJson.json";
     
+    url = [self getParams];
     [[HttpUtil shareInstance] get:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject, BOOL isCache) {
-        NSDictionary *dic = [responseObject valueForKeyPath:@"result"];
+        NSDictionary *dic = [responseObject valueForKeyPath:@"content"];
         [self dealWithData:dic];
         [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
@@ -127,18 +147,18 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
 }
 
--(void) dealWithData:(NSDictionary*)dic{
-    NSArray *posts = dic[@"posts"];
-    NSMutableArray *arr = [[NSMutableArray alloc] initWithCapacity:posts.count];
-    for (int i = 0 ; i < posts.count ; i++) {
+-(void) dealWithData:(NSDictionary*)dic {
+    NSArray *replyList = dic[@"replyList"];
+    NSMutableArray *arr = [[NSMutableArray alloc] initWithCapacity:replyList.count];
+    for (int i = 0 ; i < replyList.count ; i++) {
         DetailTableViewCellData *data = [[DetailTableViewCellData alloc] init];
-        data.avatarImageUrl = posts[i][@"user"][@"pic"];
+        data.avatarImageUrl = dic[@"post"][@"user_info"][@"user_pic"];
         data.floor = [NSString stringWithFormat:@"%d",i];
-        data.createtime = @"2012-02-03";
-        data.content = posts[i][@"title"];
-        data.commonList = posts[i][@"common"][@"list"];
+        data.createtime = [DateUtil dateStr:[replyList[i][@"reply_createtime"] doubleValue] format:nil];
+        data.content = replyList[i][@"reply_content"];
+        data.commonList = nil;
         
-        NSArray *picList = posts[i][@"pic_list"];
+        NSArray *picList = replyList[i][@"reply_pic"];
         data.picList = [[NSMutableArray alloc] initWithCapacity:picList.count];
         
         for(int j = 0 ; j < picList.count ; j++) {
@@ -151,7 +171,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
             
             
             
-            IDMPhoto *photo = [IDMPhoto photoWithURL:[NSURL URLWithString:data.picList[j][@"url"]]];
+            IDMPhoto *photo = [IDMPhoto photoWithURL:[NSURL URLWithString:picList[j][@"url"]]];
             [_idmPhotos addObject:photo];
             
             

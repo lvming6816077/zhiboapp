@@ -177,7 +177,14 @@
     
     CGFloat pubOptionViewHeight = 50;
     CGFloat imageScrollViewHeight = 80;
-    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, imageScrollViewHeight, ScreenWidth, pubOptionViewHeight) andOption:@[@"chooseImage",@"chooseAddress"]];
+    NSArray *option = nil;
+    if (self.pubType == PubTypePost) {
+        option = @[@"chooseImage",@"chooseAddress"];
+        
+    } else {
+        option = @[@"chooseImage"];
+    }
+    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, imageScrollViewHeight, ScreenWidth, pubOptionViewHeight) andOption:option];
     
     self.imageScrollView = [[ImageScrollView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, imageScrollViewHeight)];
     [self.imageScrollView setTag:101];
