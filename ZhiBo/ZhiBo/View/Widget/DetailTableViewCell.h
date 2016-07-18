@@ -12,6 +12,7 @@
 @protocol DetailTableViewCellDelegate <NSObject>
 
 - (void)didOpenImage:(UIImageView*)currentImage;
+- (void)didOpenReply;
 
 @end
 @interface DetailTableViewCell : UITableViewCell
@@ -26,6 +27,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentTextViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageContentViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *commentContentViewHeight;
+@property (weak, nonatomic) IBOutlet UILabel *replyLabel;
 @property(nonatomic, weak) id<DetailTableViewCellDelegate> myDelegate;
 
 

@@ -14,16 +14,27 @@
 @implementation DetailTopView
 {
     DetailTopData *_detailData;
+    CGFloat _titleY;
+    CGFloat _imageY;
 }
 -(instancetype) initWithFrame:(CGRect)frame andDetailData:(DetailTopData*) data {
     if (self = [super initWithFrame:frame]) {
+        
         _detailData = data;
+        
+//        _titleY = 70;
         
         [self initAvatarTop];
         
-        [self initContent];
+        [self initTitleContent];
         
         [self initTimeContent];
+        
+//        [self initTextContent];
+        
+//        [self initImageContent];
+        
+        [self initBottomLine];
     }
     
     return self;
@@ -89,19 +100,18 @@
     
 }
 
--(void) initContent{
+-(void) initTitleContent{
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 70, ScreenWidth-8, 50)];
     titleLabel.text = _detailData.title;
     
     [titleLabel setNumberOfLines:2];
     
-    [titleLabel setFont:[UIFont systemFontOfSize:17]];
+    [titleLabel setFont:[UIFont systemFontOfSize:20]];
     
     titleLabel.textColor = UIColorFromRGB(0x333333);
     
     [self addSubview:titleLabel];
 }
-
 -(void) initTimeContent {
     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 125, 140, 20)];
     
@@ -123,16 +133,69 @@
     
     [self addSubview:tagLabel];
     
-    UIView *borderBottom = [[UIView alloc] initWithFrame:CGRectMake(0, 150, ScreenWidth, 8)];
+    
+    
+}
+-(void) initTextContent {
+    
+    UITextView *textView = [[UITextView alloc] init];
+    
+    [textView setText:_detailData.content];
+    
+    [textView setFont:[UIFont systemFontOfSize:15.0]];
+    
+    CGSize sizeThatFitsTextView = [textView sizeThatFits:CGSizeMake(ScreenWidth-16, MAXFLOAT)];
+    
+    textView.frame = CGRectMake(8, 150, ScreenWidth-8, ceilf(sizeThatFitsTextView.height));
+    
+    [self addSubview:textView];
+    
+    _titleY = textView.frame.size.height + 150;
+    
+    
+}
+
+-(void) initImageContent {
+    NSArray *list = _detailData.picList;
+    CGFloat width = ScreenWidth-16;
+    CGFloat y = _titleY;
+    CGFloat marginTop = 4;
+    for (int i = 0 ; i < list.count ; i++) {
+        NSDictionary *dic = list[i];
+        
+        UIImageView *imageView = [[UIImageView alloc] init];
+        [imageView setImageWithURL:[NSURL URLWithString:qiuniuUrl(dic[@"key"],1000)]];
+        
+        
+        CGFloat height = width*[dic[@"h"] integerValue]/[dic[@"w"] integerValue];
+        imageView.frame = CGRectMake(8, y, width, height);
+        
+        y += height+marginTop;
+        
+        [self addSubview:imageView];
+    }
+    
+    _imageY = y;
+}
+
+-(void) initBottomLine {
+    CGFloat y = 153;//_imageY ? _imageY : _titleY;
+    
+//    y += 10;
+    
+    UIView *borderBottom = [[UIView alloc] initWithFrame:CGRectMake(0, y, ScreenWidth, 8)];
     borderBottom.backgroundColor = UIColorFromRGB(0xf2f2f2);
     
     [self addSubview:borderBottom];
     
-    UIView *borderLine = [[UIView alloc] initWithFrame:CGRectMake(0, 150, ScreenWidth, .5)];
+    UIView *borderLine = [[UIView alloc] initWithFrame:CGRectMake(0, y, ScreenWidth, .5)];
     [borderLine.layer setBorderColor:UIColorFromRGB(0xe1e1e1).CGColor];
     [borderLine.layer setBorderWidth:.5];
     
     [self addSubview:borderLine];
     
+    self.frame = CGRectMake(0, 0, ScreenWidth, borderLine.frame.origin.y);
 }
+
+
 @end

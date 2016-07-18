@@ -10,8 +10,9 @@
 #import "DetailTableViewCell.h"
 #import "DetailTopData.h"
 #import "DetailBottomData.h"
+#import "InputFacePanel.h"
 
-@interface DetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DetailTableViewCellDelegate>
+@interface DetailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DetailTableViewCellDelegate,InputFacePanelDelegate>
 @property(nonatomic,strong) DetailTopData *detailTopData;
 @property(nonatomic,strong) DetailBottomData *detailBottomData;
 

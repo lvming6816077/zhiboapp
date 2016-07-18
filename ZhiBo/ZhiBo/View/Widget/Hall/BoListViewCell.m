@@ -54,11 +54,13 @@
     
     if (data.picList.count == 0) {
         self.imageContentHeight.constant = 0;
+        self.imageContentMarginTop.constant = 0;
     } else if (data.picList.count == 1) {
         UIImageView *image = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, wrapperWidth, wrapperWidth/2+20)];
         [self.imageContentView addSubview:image];
 
         self.imageContentHeight.constant = wrapperWidth/2+20;
+        self.imageContentMarginTop.constant = 12;
         [self setImage:image url:data.picList[0]];
     
     } else if (data.picList.count == 2) {
@@ -72,6 +74,7 @@
         
         
         self.imageContentHeight.constant = width;
+        self.imageContentMarginTop.constant = 12;
         
         
         [self setImage:imageLeft url:data.picList[0]];
@@ -88,6 +91,7 @@
         [self.imageContentView addSubview:image3];
         
         self.imageContentHeight.constant = smallWidth*2+5;
+        self.imageContentMarginTop.constant = 12;
         
         [self setImage:image1 url:data.picList[0]];
         [self setImage:image2 url:data.picList[1]];

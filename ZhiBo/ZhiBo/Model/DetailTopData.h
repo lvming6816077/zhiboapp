@@ -15,6 +15,8 @@
 @property(nonatomic,strong) NSString *gender;
 @property(nonatomic,strong) NSString *status;
 @property(nonatomic,strong) NSString *title;
+@property(nonatomic,strong) NSString *content;
 @property(nonatomic,strong) NSString *createtime;
 @property(nonatomic,strong) NSString *tagname;
+@property(nonatomic,strong) NSArray *picList;
 @end

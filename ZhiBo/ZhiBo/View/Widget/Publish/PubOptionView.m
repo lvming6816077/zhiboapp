@@ -13,24 +13,29 @@
 #import "DNAsset.h"
 #import "DNPhotoBrowser.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-
+#import "VCUtil.h"
+#import "FacePanel.h"
 
 @interface PubOptionView ()
 @property (nonatomic, strong) NSMutableArray *assetsArray;
+@property (nonatomic, strong) FacePanel *faceView;
+@property (nonatomic, strong) UIView *bottomOptionView;
 @end
 @implementation PubOptionView
 {
     NSMutableArray *_selectedPhoto;
     UIButton *_chooseAddress;
     NSDictionary *_currentPosition;
+    BOOL _clickFace;
 
 }
 
 -(instancetype) initWithFrame:(CGRect)frame andOption:(NSArray*)optionList{
 
     if(self = [super initWithFrame:frame]) {
-
         
+        self.backgroundColor = UIColorFromRGB(0xf8f8f8);
+        _clickFace = NO;
         _selectedPhoto = [NSMutableArray new];
         _currentPosition = nil;
         [self initOptionView:optionList];
@@ -62,10 +67,25 @@
 //        [self addSubview:chooseBtn];
 //    }
     
+    
+//    UIButton *chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"faceIcon"]];
+    
+    faceImageView.frame = CGRectMake(6, self.frame.size.height-22-8, 22 , 22);
+        
+//    [chooseBtn setImage:[UIImage imageNamed:@"chooseImage"] forState:UIControlStateNormal];
+    
+    faceImageView.userInteractionEnabled = YES;
+    [faceImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didToggleFace:)]];
+        
+    [self addSubview:faceImageView];
+        
+    
+    
     if ([opt valueForKey:@"chooseImage"]) {
         UIButton *chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         
-        chooseBtn.frame = CGRectMake(16, self.frame.size.height-26-8, 21 , 26);
+        chooseBtn.frame = CGRectMake(36, self.frame.size.height-26-8, 21 , 26);
         
         [chooseBtn setImage:[UIImage imageNamed:@"chooseImage"] forState:UIControlStateNormal];
         [chooseBtn addTarget:self action:@selector(showChooseImg) forControlEvents:UIControlEventTouchUpInside];
@@ -93,6 +113,11 @@
         [self addSubview:_chooseAddress];
         
     }
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     
     
@@ -124,8 +149,65 @@
     }
 
 }
--(void) showChooseImg{
+-(void) didToggleFace:(UITapGestureRecognizer*) ges {
     
+    _clickFace = YES;
+    UIViewController *vc = [VCUtil getPresentedViewController];
+    
+    self.faceView = [vc.view viewWithTag:102];
+    
+    [vc.view endEditing:YES];
+}
+#pragma mark - keyboard NSNotificationCenter
+
+-(void)keyboardWillShow:(NSNotification*)notification {
+    NSDictionary* info = [notification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    ////    CGRect keyboardBounds;
+    //    CGRect keyboardFrame = [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    ////    keyboardFrame
+        NSNumber *duration = [notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    //    NSNumber *curve = [notification.userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey];
+    
+//    [self.view bringSubviewToFront:self.bottomOptionView];
+    
+//    [self performSelector:@selector(delayMethod:) withObject:[NSString stringWithFormat:@"%f",kbSize.height] afterDelay:.1f];
+//    NSLog(@"%@",duration);
+    
+    [UIView animateWithDuration:[duration floatValue]  animations:^{
+        
+        
+    }];
+    NSLog(@"x:%f",kbSize.height);
+    if (kbSize.height > 0) {
+        [self superview].transform = CGAffineTransformMakeTranslation(0, -kbSize.height);
+        
+        self.faceView.transform = CGAffineTransformIdentity;
+    }
+    
+}
+-(void) delayMethod:(NSString*)height {
+    
+}
+#pragma mark - keyboard NSNotificationCenter
+
+-(void)keyboardWillHide:(NSNotification*)notification {
+    if (_clickFace) {
+        [UIView animateWithDuration:.2 animations:^{
+            [self superview].transform = CGAffineTransformMakeTranslation(0, -self.faceView.frame.size.height);
+            self.faceView.transform = CGAffineTransformMakeTranslation(0, -self.faceView.frame.size.height);
+            
+        }];
+        
+        
+    } else {
+        [self superview].transform = CGAffineTransformIdentity;
+    }
+    
+}
+
+-(void) showChooseImg{
+    [[VCUtil getPresentedViewController].view endEditing:YES];
 //    PublishViewController *vc = (PublishViewController*)[self.superview nextResponder];
 //        
 //    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];

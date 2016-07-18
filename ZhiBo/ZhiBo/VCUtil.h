@@ -10,4 +10,5 @@
 
 @interface VCUtil : NSObject
 +(UIViewController *)getCurrentVC;
++ (UIViewController *)getPresentedViewController;
 @end

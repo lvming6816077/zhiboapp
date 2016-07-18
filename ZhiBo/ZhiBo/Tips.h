@@ -14,3 +14,4 @@
 
 +(void) showTips:(UIView *) view text:(NSString *)text;
 @end
+

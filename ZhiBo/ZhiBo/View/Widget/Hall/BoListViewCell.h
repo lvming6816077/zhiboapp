@@ -24,6 +24,9 @@
 
 @property (weak, nonatomic) IBOutlet UIView *imageContentView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageContentHeight;
--(void)setCellData:(BoListViewCellData *)data;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageContentMarginTop;
+
+
+-(void)setCellData:(BoListViewCellData *)data;
 @end

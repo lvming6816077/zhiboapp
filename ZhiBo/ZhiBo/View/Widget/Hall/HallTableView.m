@@ -141,10 +141,13 @@
         ncd.address = arr[i][@"post_address"];
         ncd.nickname = arr[i][@"user_info"][@"user_nickname"];
         ncd.createtime = arr[i][@"post_time"];
-        NSMutableArray *pics = [NSMutableArray new];
-        NSArray *picss = arr[i][@"post_pic"];
+        ncd.isZan = [arr[i][@"isZan"] integerValue];
         
-        for (NSDictionary *dic in picss) {
+        NSMutableArray *pics = [NSMutableArray new];
+        NSArray *detailPicList = arr[i][@"post_pic"];
+        ncd.detailPicList = detailPicList;
+        
+        for (NSDictionary *dic in detailPicList) {
             [pics addObject:[NSString stringWithFormat:@"http://tenny.qiniudn.com/%@?imageView2/2/w/600",dic[@"key"]]];
         }
         ncd.picList = pics;
@@ -249,12 +252,15 @@
     detaiToplData.title = currentData.title;
     detaiToplData.pid = currentData.pid;
     detaiToplData.avatarUrl = currentData.avatarImageUrl;
+    detaiToplData.picList = currentData.detailPicList;
+    detaiToplData.content = currentData.desc;
     
     DetailBottomData *detailBottomData = [[DetailBottomData alloc] init];
     detailBottomData.likecount = currentData.likecount;
     detailBottomData.pid = currentData.pid;
     detailBottomData.sharecount = 0;
     detailBottomData.savecount = 0;
+    detailBottomData.isZan = currentData.isZan;
     
     
     HallViewController *vc = (HallViewController*)[self.superview nextResponder];

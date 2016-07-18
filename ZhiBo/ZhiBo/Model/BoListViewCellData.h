@@ -20,7 +20,9 @@
 @property(nonatomic,strong) NSString *desc;
 @property(nonatomic,assign) NSInteger likecount;
 @property(nonatomic,assign) NSInteger commentcount;
-@property(nonatomic,strong) NSArray *picList;
+@property(nonatomic,strong) NSArray *picList;// 列表页用的piclist
+@property(nonatomic,strong) NSArray *detailPicList; // 详情页用的piclist
+@property(nonatomic,assign) NSInteger isZan; // 是否赞过
 
 
 -(instancetype) initWithDict:(NSDictionary *)dict;

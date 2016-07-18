@@ -19,6 +19,8 @@
 #import "DetailTopView.h"
 #import "DetailBottomView.h"
 
+#import "FacePanel.h"
+
 #import "DateUtil.h"
 
 
@@ -31,6 +33,8 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 
 @interface DetailViewController ()
 @property(nonatomic,strong) UITableView *tableView;
+@property(nonatomic,strong) InputFacePanel *inputBarView;
+@property(nonatomic,strong) FacePanel *faceView;
 @property(nonatomic,strong) NSMutableArray<DetailTableViewCellData*> *dataList;
 @property(nonatomic,strong) NSMutableDictionary *heightList;
 @property(nonatomic,strong) DetailTopView *topView;
@@ -44,6 +48,8 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     NSInteger _imageCount;
 
     NSInteger _start;
+    
+    NSString *_pid;
 
 
     
@@ -61,6 +67,19 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     return self;
 
 }
+
+-(instancetype) initWithDetailId:(NSString*)pid {
+    
+    if (self == [super init]) {
+        
+        _pid = pid;
+        
+    }
+    
+    return self;
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -72,6 +91,18 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     [self initTopView];
     
     [self initBottomView];
+    
+    [self initInputView];
+}
+-(void) refeshValue {
+    _start = 0;
+    
+    
+    _imageCount = 0;
+    _idmPhotos = [NSMutableArray new];
+    
+    self.dataList = [NSMutableArray new];
+    self.heightList = [[NSMutableDictionary alloc] init];
 }
 
 -(void) initTopView{
@@ -80,51 +111,99 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     self.tableView.tableHeaderView = self.topView;
 }
 
+-(void) initInputView {
+    self.inputBarView = [[InputFacePanel alloc] initWithData:nil andFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight, ScreenWidth, 50)];
+    self.inputBarView.delegate = self;
+    
+    
+    self.faceView = [[FacePanel alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight, ScreenWidth, 200) andOption:nil];
+    
+
+    [self.view addSubview:self.inputBarView];
+    [self.view addSubview:self.faceView];
+}
+
+-(void) initBottomView {
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-BottomViewHeight, ScreenWidth, BottomViewHeight)];
+    //        topBottomView.layer.borderWidth = 0.5;
+    //        self.topBottomView.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7].CGColor;
+    [bottomView.layer setShadowColor:[UIColor blackColor].CGColor];
+    [bottomView.layer setShadowOffset:CGSizeMake(0, 1)];
+    //    bottomView.layer setS
+    //        self.topBottomView.layer.masksToBounds = false;
+    //        self.topBottomView.layer.shouldRasterize = true;
+    bottomView.layer.shadowOpacity = .2;
+    //        bottomView.layer.shadowRadius = 5;
+    //        self.topBottomView.clipsToBounds = true;
+    bottomView.backgroundColor = [UIColor whiteColor];
+    
+    
+    
+    //    DetailBottomData *bottomData = @{@"pid":[NSString stringWithFormat:@"%d",self.detailTopData.pid]};
+    
+    DetailBottomView *detailBottomView = [[DetailBottomView alloc] initWithData:self.detailBottomData andFrame:bottomView.bounds];
+    
+    [bottomView addSubview:detailBottomView];
+    
+    [self.view addSubview:bottomView];
+    
+}
 -(void) initTableView{
+    
+    // 初始化tableview
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight-BottomViewHeight)];
+    self.tableView.separatorStyle = NO;
+    [self.view addSubview:self.tableView];
+    
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    
-    _imageCount = 0;
-    _idmPhotos = [NSMutableArray new];
-    
-    self.dataList = [NSMutableArray new];
-    self.heightList = [[NSMutableDictionary alloc] init];
+    // 初始化变量
+    [self refeshValue];
     
     
+    // 初始化cell
     UINib *cellNib = [UINib nibWithNibName:cellIdentifier bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:cellIdentifier];
     
-    
-    
+    // 下拉刷新
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.dataList = nil;
-        self.dataList = [NSMutableArray new];
-        _start = 0;
+        
+        [self refeshValue];
         
         [self fetchData:@""];
         
     }];
+    
+    // 滚动加载
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        _start = MAX(1, _start);
         _start = _start + 1;
         [self fetchData:@""];
         
-        
     }];
     
-    _start = 0;
+    
+    // 请求数据
     [self fetchData:@""];
-    [self.view addSubview:self.tableView];
-
+    
     
 }
 -(NSString *)getParams {
     
     NSURLComponents *components = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@/reply/getReplyByPost", BaseCgiUrl]];
-    NSURLQueryItem *start = [NSURLQueryItem queryItemWithName:@"start" value:[NSString stringWithFormat:@"%d",MAX(_start, 1)]];
+    NSURLQueryItem *start = [NSURLQueryItem queryItemWithName:@"start" value:[NSString stringWithFormat:@"%d",  MAX(_start, 1)]];
     
-    NSURLQueryItem *pid = [NSURLQueryItem queryItemWithName:@"pid" value:@"7"];
+    NSURLQueryItem *pid;
+    if (self.detailTopData) {
+        pid = [NSURLQueryItem queryItemWithName:@"pid" value:[NSString stringWithFormat:@"%d",self.detailTopData.pid]];
+    } else {
+        pid = [NSURLQueryItem queryItemWithName:@"pid" value:_pid];
+    }
+
+    
     
     components.queryItems = @[start, pid];
     
@@ -135,11 +214,12 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 //    url = @"http://tenny.qiniudn.com/detailJson.json";
     
     url = [self getParams];
+
     [[HttpUtil shareInstance] get:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject, BOOL isCache) {
         NSDictionary *dic = [responseObject valueForKeyPath:@"content"];
+        
         [self dealWithData:dic];
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
+        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     } cachePolicy:CachePolicyOne];
@@ -148,7 +228,23 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 }
 
 -(void) dealWithData:(NSDictionary*)dic {
-    NSArray *replyList = dic[@"replyList"];
+    
+    [self.tableView.mj_header endRefreshing];
+    [self.tableView.mj_footer endRefreshing];
+    
+    self.tableView.separatorStyle = YES;
+    
+    NSMutableArray *replyList = [[NSMutableArray alloc] initWithArray:(NSArray*)dic[@"replyList"]];
+    
+    if (_start < 2) {
+        NSDictionary *postReply = @{@"reply_createtime":_detailTopData.createtime,
+                                    @"reply_content":_detailTopData.content,
+                                    @"reply_pic":_detailTopData.picList};
+        
+        [replyList insertObject:postReply atIndex:0];
+    }
+    
+    
     NSMutableArray *arr = [[NSMutableArray alloc] initWithCapacity:replyList.count];
     for (int i = 0 ; i < replyList.count ; i++) {
         DetailTableViewCellData *data = [[DetailTableViewCellData alloc] init];
@@ -163,15 +259,13 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
         
         for(int j = 0 ; j < picList.count ; j++) {
             
-            
             NSMutableDictionary *dic = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary*)picList[j]];
             [dic setValue:[NSNumber numberWithInteger:_imageCount]  forKey:@"imageIndex"];
             
             [data.picList addObject:dic];
             
             
-            
-            IDMPhoto *photo = [IDMPhoto photoWithURL:[NSURL URLWithString:picList[j][@"url"]]];
+            IDMPhoto *photo = [IDMPhoto photoWithURL:[NSURL URLWithString:qiuniuUrl(dic[@"key"], 1000)]];
             [_idmPhotos addObject:photo];
             
             
@@ -182,11 +276,17 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
         [arr addObject:data];
         
     }
-    self.dataList = (NSMutableArray*)[self.dataList arrayByAddingObjectsFromArray:arr];
-    
-    
-    
-    [self.tableView reloadData];
+    if (arr.count == 0) {
+
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
+
+    } else {
+        self.dataList = (NSMutableArray*)[self.dataList arrayByAddingObjectsFromArray:arr];
+        
+        
+        [self.tableView reloadData];
+    }
+
 
 }
 #pragma mark - DetailTableViewCellDelegate
@@ -199,13 +299,27 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     _browser.displayActionButton = NO;
     _browser.displayDoneButton = NO;
     _browser.displayArrowButton = NO;
-        _browser.usePopAnimation = true;
-        _browser.forceHideStatusBar = false;
+    _browser.usePopAnimation = true;
+    _browser.forceHideStatusBar = false;
     _browser.autoHideInterface = NO;
     [_browser setInitialPageIndex:currentImage.tag-100];
     //    PublishViewController *vc = (PublishViewController*)[self.superview.superview nextResponder];
         [self presentViewController:_browser animated:YES completion:nil];
     
+}
+-(void) didOpenReply {
+    self.faceView.transform = CGAffineTransformIdentity;
+    [self.inputBarView focusInput:self.faceView];
+}
+-(void) didToggleFace {
+//    [UIView animateWithDuration:.5 animations:^{
+//        self.faceView.transform = CGAffineTransformMakeTranslation(0, -200);
+//    }];
+//    [UIView animateWithDuration:.5 animations:^{
+//        self.inputBarView.transform = CGAffineTransformMakeTranslation(0, -250);
+//    }];
+    
+//    [self.inputView focusInput];
 }
 
     //避免循环引用
@@ -257,33 +371,10 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     [cell setCellData:currentData];
     
     return cell;
-
 }
--(void) initBottomView {
-    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-BottomViewHeight, ScreenWidth, BottomViewHeight)];
-//        topBottomView.layer.borderWidth = 0.5;
-//        self.topBottomView.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7].CGColor;
-        [bottomView.layer setShadowColor:[UIColor blackColor].CGColor];
-        [bottomView.layer setShadowOffset:CGSizeMake(0, 1)];
-//    bottomView.layer setS
-//        self.topBottomView.layer.masksToBounds = false;
-//        self.topBottomView.layer.shouldRasterize = true;
-        bottomView.layer.shadowOpacity = .2;
-//        bottomView.layer.shadowRadius = 5;
-//        self.topBottomView.clipsToBounds = true;
-    bottomView.backgroundColor = [UIColor whiteColor];
-    
-    
-    
-//    DetailBottomData *bottomData = @{@"pid":[NSString stringWithFormat:@"%d",self.detailTopData.pid]};
-    
-    DetailBottomView *detailBottomView = [[DetailBottomView alloc] initWithData:self.detailBottomData andFrame:bottomView.bounds];
-    
-    [bottomView addSubview:detailBottomView];
-    
-    [self.view addSubview:bottomView];
-
-    
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+//    [self searchBarCancelButtonClicked:self.searchBar];
+    [self.inputBarView hideInput];
     
 }
 - (void)didReceiveMemoryWarning {

@@ -14,10 +14,14 @@
 #import "AFNetworking.h"
 #import "HttpUtil.h"
 #import "LoginUtil.h"
+#import "FacePanel.h"
 
 
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
-#define OptionBarHeight 130
+
+#define pubOptionViewHeight 40
+#define imageScrollViewHeight 70
+#define OptionBarHeight (pubOptionViewHeight+imageScrollViewHeight)
 
 
 
@@ -30,6 +34,7 @@
 @property(nonatomic,strong) UITextField *titleInput;
 @property(nonatomic,strong) UITextView *textView;
 @property(nonatomic,strong) PubOptionView *pubOptionView;
+@property(nonatomic,strong) FacePanel *faceView;
 
 
 @property(nonatomic,assign) PubType pubType;
@@ -154,7 +159,7 @@
     [self.textView addSubview:self.placeHolder];
     self.textView.delegate = self;
     self.textView.frame = CGRectMake(12, y, ScreenWidth-24, self.scrollView.frame.size.height-y);
-    self.textView.text = @"";
+    self.textView.text = @"";//@"444\U0001F60233";
     self.textView.scrollEnabled = false;
 //    textView.backgroundColor = [UIColor redColor];
     self.textView.contentSize = CGSizeMake(0,0);
@@ -175,8 +180,7 @@
 
 -(void) setPubOption {
     
-    CGFloat pubOptionViewHeight = 50;
-    CGFloat imageScrollViewHeight = 80;
+
     NSArray *option = nil;
     if (self.pubType == PubTypePost) {
         option = @[@"chooseImage",@"chooseAddress"];
@@ -184,22 +188,25 @@
     } else {
         option = @[@"chooseImage"];
     }
+    self.faceView = [[FacePanel alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight, ScreenWidth, 200) andOption:nil];
+    [self.faceView setTag:102];
     self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, imageScrollViewHeight, ScreenWidth, pubOptionViewHeight) andOption:option];
     
+    
+    
     self.imageScrollView = [[ImageScrollView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, imageScrollViewHeight)];
+
     [self.imageScrollView setTag:101];
-//    imageScrollView.backgroundColor = [UIColor blueColor];
+
 
     self.bottomOptionView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-OptionBarHeight, ScreenWidth, OptionBarHeight)];
     
     [self.bottomOptionView addSubview:self.pubOptionView];
     [self.bottomOptionView addSubview:self.imageScrollView];
     [self.view addSubview:self.bottomOptionView];
+    [self.view addSubview:self.faceView];
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
 }
 
@@ -279,7 +286,13 @@
     NSDictionary *poi = [self.pubOptionView getCurrentPosition];
     NSString *longitude = poi[@"longitude"];
     NSString *latitude = poi[@"latitude"];
-    NSString *city = [NSString stringWithFormat:@"%@ %@",poi[@"city"],poi[@"name"]];
+    NSString *city;
+    if (poi[@"city"] && poi[@"name"]) {
+        city = [NSString stringWithFormat:@"%@ %@",poi[@"city"],poi[@"name"]];
+    } else {
+        city = @"";
+    }
+    
     NSString *address = poi[@"address"];
     
     
@@ -294,8 +307,6 @@
                           @"city":city,
                           @"address":address,
                           @"uid":uid};
-    
-    
     
     
     [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/post/createPost", BaseCgiUrl]parameters:dic formBody:^(id<AFMultipartFormData> formData) {
@@ -345,32 +356,20 @@
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 
     [self.view endEditing:YES];
-}
-
-#pragma mark - keyboard NSNotificationCenter
-
--(void)keyboardWillShow:(NSNotification*)notification {
-    NSDictionary* info = [notification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-////    CGRect keyboardBounds;
-//    CGRect keyboardFrame = [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-////    keyboardFrame
-//    NSNumber *duration = [notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-//    NSNumber *curve = [notification.userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey];
     
-    [self.view bringSubviewToFront:self.bottomOptionView];
-
-    self.bottomOptionView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height);
+    [UIView animateWithDuration:.2 animations:^{
+        self.faceView.transform = CGAffineTransformIdentity;
+        self.bottomOptionView.transform = CGAffineTransformIdentity;
+        
+    }];
+    
     
 }
 
-#pragma mark - keyboard NSNotificationCenter
-
--(void)keyboardWillHide:(NSNotification*)notification {
-    self.bottomOptionView.transform = CGAffineTransformIdentity;
+-(void)viewDidUnload{
+    [super viewDidUnload];
+    [[NSNotificationCenter defaultCenter]removeObserver:self.pubOptionView];
 }
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

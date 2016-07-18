@@ -11,6 +11,7 @@
 @interface DetailBottomData : NSObject
 @property(nonatomic,assign) NSInteger pid;
 @property(nonatomic,assign) NSInteger likecount;
-@property(nonatomic,assign) NSInteger *sharecount;
-@property(nonatomic,assign) NSInteger *savecount;
+@property(nonatomic,assign) NSInteger sharecount;
+@property(nonatomic,assign) NSInteger savecount;
+@property(nonatomic,assign) NSInteger isZan;
 @end

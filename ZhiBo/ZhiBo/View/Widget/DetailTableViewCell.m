@@ -19,6 +19,7 @@
 #define commentStartY 29
 #define moreHeight 20
 #define moreY 9
+#define imageMarginBottom 10
 
 @implementation DetailTableViewCell
 {
@@ -38,9 +39,16 @@
     self.avatarImageView.userInteractionEnabled = true;
 
     
-//    self.contentTextView.backgroundColor = [UIColor redColor];
+//    [self.commentContentView setLayoutMargins:UIEdgeInsetsZero];
+//    self.contentTextView.contentInset    = UIEdgeInsetsMake(-8,0,-4,0);
+    self.contentTextView.textContainer.lineFragmentPadding = 0;
+    self.contentTextView.textContainerInset = UIEdgeInsetsMake(0,4,0,0);
     _idmPhotos = [NSMutableArray new];
     _imageCount = 0;
+    
+    
+    
+    [self.replyLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(replyClick:)]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -53,7 +61,11 @@
         [view removeFromSuperview];
     }
     
-//    CGFloat dividerHeight = 9;
+    if (commentList.count == 0) {
+        self.commentContentViewHeight.constant = 0;
+        return;
+    }
+
     UIView *topLine = [[CommentTopLineView alloc] initWithFrame:CGRectMake(-8, 0, ScreenWidth, 9)];
     topLine.backgroundColor = [UIColor clearColor];
     [self.commentContentView addSubview:topLine];
@@ -154,7 +166,7 @@
     
     CGFloat constantH = 0;
     CGFloat y = 0;
-    CGFloat marginBottom = 10;
+
     for (int i = 0 ; i < picList.count ; i++) {
 
         NSDictionary *dicImage = picList[i];
@@ -162,15 +174,20 @@
         CGFloat imageW = (ScreenWidth-16);
         CGFloat imageH = [dicImage[@"h"] floatValue] * imageW/ [dicImage[@"w"] floatValue];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, imageW, imageH)];
-        [imageView setImageWithURL:[NSURL URLWithString:dicImage[@"url"]]];
+        [imageView setImageWithURL:[NSURL URLWithString:qiuniuUrl(dicImage[@"key"], 600)]];
         [self.imageContentView addSubview:imageView];
-        constantH += imageH + marginBottom;
-        y += imageH + marginBottom;
-        NSLog(@"%@",(NSNumber*)dicImage[@"imageIndex"]);
+        if (i == picList.count-1) {
+            constantH += imageH + 0;
+            y += imageH + 0;
+        } else {
+            constantH += imageH + imageMarginBottom;
+            y += imageH + imageMarginBottom;
+        }
+        
+
         [imageView setTag:[(NSNumber*)dicImage[@"imageIndex"] integerValue]+100];
         imageView.userInteractionEnabled = true;
         [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewClk:)]];
-        
 
     }
     
@@ -179,8 +196,19 @@
     
 
 }
-
+-(void) initTextContent:(NSString*) text {
+    [self.contentTextView setText:text];
+    
+    
+    CGSize sizeThatFitsTextView = [self.contentTextView sizeThatFits:CGSizeMake(ScreenWidth-16, MAXFLOAT)];
+    
+    self.contentTextViewHeight.constant = ceilf(sizeThatFitsTextView.height);
+//    NSLog(@"%f",sizeThatFitsTextView.height);
+}
 -(CGFloat) heightForComment:(NSArray*) commentList{
+    
+    if (commentList.count == 0) return 0;
+    
     CGFloat y = commentStartY;
     CGFloat height = commentHeight;
     CGFloat marginTop = 3;
@@ -202,14 +230,18 @@
 -(CGFloat) heightForImage:(NSArray*)picList{
     CGFloat constantH = 0;
 
-    CGFloat marginBottom = 10;
     for (int i = 0 ; i < picList.count ; i++) {
         
         NSDictionary *dicImage = picList[i];
         
         CGFloat imageW = (ScreenWidth-16);
         CGFloat imageH = [dicImage[@"h"] floatValue] * imageW/ [dicImage[@"w"] floatValue];
-        constantH += imageH + marginBottom;
+
+        if (i == picList.count-1) {
+            constantH += imageH + 0;
+        } else {
+            constantH += imageH + imageMarginBottom;
+        }
 
     }
     return constantH;
@@ -219,7 +251,6 @@
     
     CGSize sizeThatFitsTextView = [self.contentTextView sizeThatFits:CGSizeMake(ScreenWidth-16, MAXFLOAT)];
     
-
     
     return ceilf(sizeThatFitsTextView.height);
 }
@@ -232,35 +263,35 @@
     otherHeight +
     [self heightForText:data.content]+
     [self heightForImage:data.picList]+
-    [self heightForComment:@[@"",@"",@"",@""]];
-
+    [self heightForComment:@[]];
+ 
 }
 -(void) setCellData:(DetailTableViewCellData*)data{
-    [self.avatarImageView setImageWithURL:[NSURL URLWithString:@"http://q1.qlogo.cn/g?b=qq&k=hGgI20ve59dSRh0GIr1Fuw&s=100&t=1448142454"]];
+    [self.avatarImageView setImageWithURL:[NSURL URLWithString:data.avatarImageUrl]];
     
     self.floorLabel.text = [NSString stringWithFormat:@"第%@楼",data.floor];
     
-    self.timeLabel.text = @"2016-01-05";
+    self.timeLabel.text = data.createtime;
     
-    [self.contentTextView setText:data.content];;
-
-    CGSize sizeThatFitsTextView = [self.contentTextView sizeThatFits:CGSizeMake(ScreenWidth-16, MAXFLOAT)];
-    
-    self.contentTextViewHeight.constant = ceilf(sizeThatFitsTextView.height);
-    
-    [self.avatarImageView setImageWithURL:[NSURL URLWithString:data.avatarImageUrl]];
+    [self initTextContent:data.content];
     
     [self initImageContent:data.picList index:data.index];
-    NSArray *arr = @[@"",@"",@"",@""];
-    [self initCommentContent:arr];
-
     
+    NSArray *arr = @[];
+    [self initCommentContent:arr];
     
 }
+
 -(void)imageViewClk:(UITapGestureRecognizer*) ges {
     UIImageView *currentImage = (UIImageView*)[ges view];
     
     
     [self.myDelegate didOpenImage:currentImage];
 }
+-(void)replyClick:(UITapGestureRecognizer*) ges {
+    
+    
+    [self.myDelegate didOpenReply];
+}
+
 @end

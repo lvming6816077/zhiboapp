@@ -96,24 +96,32 @@
             [_lib assetForURL:imgs[i] resultBlock:^(ALAsset *asset) {
                 
                 
-                if (!true) {
-                    //        NSNumber *orientationValue = [asset valueForProperty:ALAssetPropertyOrientation];
-                    //        UIImageOrientation orientation = UIImageOrientationUp;
-                    //        if (orientationValue != nil) {
-                    //            orientation = [orientationValue intValue];
-                    //        }
-                    //
-                    //        image = [UIImage imageWithCGImage:asset.thumbnail];
-                    //        //        image = [UIImage imageWithCGImage:asset.thumbnail scale:0.1 orientation:orientation];
-                    //
-                    //        string = [NSString stringWithFormat:@"fileSize:%lld k\nwidth:%.0f\nheiht:%.0f",asset.defaultRepresentation.size/1000,[[asset defaultRepresentation] dimensions].width, [[asset defaultRepresentation] dimensions].height];
+                if (!asset) {
+                    [_lib enumerateGroupsWithTypes:ALAssetsGroupPhotoStream
+                                       usingBlock:^(ALAssetsGroup *group, BOOL *stop)
+                     {
+                         [group enumerateAssetsWithOptions:NSEnumerationReverse
+                                                usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                                                    
+                                                    if([[result valueForProperty:ALAssetPropertyAssetURL] isEqual:imgs[i]])
+                                                    {
+                                                        image = [UIImage imageWithCGImage:result.defaultRepresentation.fullScreenImage];
+                                                        [self setImage:image andImageView:imageView];
+                                                        *stop = YES;
+                                                    }
+                                                }];
+                     }
+                                     failureBlock:^(NSError *error)
+                     {
+                         
+                     }];
                     
                 } else {
                     image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-                    
+                    [self setImage:image andImageView:imageView];
                 }
                 
-                [self setImage:image andImageView:imageView];
+                
 
             } failureBlock:^(NSError *error) {
                 
