@@ -90,7 +90,7 @@
         [nickLabel setTextColor:UIColorFromRGB(0X275dac)];
         
         
-        contentLabel.text = commentList[i];
+        contentLabel.text = commentList[i][@"comment_content"];
         [contentLabel setTextColor:UIColorFromRGB(0x666666)];
         [contentLabel setFont:[UIFont systemFontOfSize:14]];
         

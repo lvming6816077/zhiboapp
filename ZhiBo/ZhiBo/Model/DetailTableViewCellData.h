@@ -13,7 +13,7 @@
 @property(nonatomic,strong) NSString *createtime;
 @property(nonatomic,strong) NSString *floor;
 @property(nonatomic,strong) NSMutableArray<NSMutableDictionary*> *picList;
-@property(nonatomic,strong) NSMutableArray *commonList;
+@property(nonatomic,strong) NSMutableArray<NSDictionary*> *commonList;
 @property(nonatomic,strong) NSString *content;
 @property(nonatomic,assign) NSInteger index;
 @property(nonatomic,assign) NSInteger replyId;

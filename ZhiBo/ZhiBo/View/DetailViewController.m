@@ -256,7 +256,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
         data.floor = replyList[i][@"reply_floor"];
         data.createtime = [DateUtil dateStr:[replyList[i][@"reply_createtime"] doubleValue] format:nil];
         data.content = replyList[i][@"reply_content"];
-        data.commonList = [[NSMutableArray alloc] initWithArray:@[]];
+        data.commonList = [[NSMutableArray alloc] initWithArray:replyList[i][@"commentList"]];
         
         NSArray *picList = replyList[i][@"reply_pic"];
         data.picList = [[NSMutableArray alloc] initWithCapacity:picList.count];
@@ -331,7 +331,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 -(void) clickSubmit:(NSString*) str {
     
     DetailTableViewCellData *currentData = self.dataList[_cellIndex];
-    [currentData.commonList addObject:str];
+    [currentData.commonList addObject:@{@"comment_content":str}];
     
     NSString *key = [NSString stringWithFormat:@"%ld",(long)_cellIndex];
     [self.heightList removeObjectForKey:key];
