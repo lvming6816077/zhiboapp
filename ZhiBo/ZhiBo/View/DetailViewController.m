@@ -20,7 +20,7 @@
 #import "DetailBottomView.h"
 
 #import "FacePanel.h"
-
+#import "LoginUtil.h"
 #import "DateUtil.h"
 
 
@@ -50,6 +50,8 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     NSInteger _start;
     
     NSString *_pid;
+    
+    NSInteger _cellIndex;
 
 
     
@@ -61,7 +63,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
         self.detailTopData = topData;
         self.detailBottomData = bottomData;
-        
+        _cellIndex = 0;
     }
     
     return self;
@@ -199,6 +201,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     NSURLQueryItem *pid;
     if (self.detailTopData) {
         pid = [NSURLQueryItem queryItemWithName:@"pid" value:[NSString stringWithFormat:@"%d",self.detailTopData.pid]];
+        _pid = [NSString stringWithFormat:@"%d",self.detailTopData.pid];
     } else {
         pid = [NSURLQueryItem queryItemWithName:@"pid" value:_pid];
     }
@@ -236,23 +239,24 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
     NSMutableArray *replyList = [[NSMutableArray alloc] initWithArray:(NSArray*)dic[@"replyList"]];
     
-    if (_start < 2) {
-        NSDictionary *postReply = @{@"reply_createtime":_detailTopData.createtime,
-                                    @"reply_content":_detailTopData.content,
-                                    @"reply_pic":_detailTopData.picList};
-        
-        [replyList insertObject:postReply atIndex:0];
-    }
+//    if (_start < 2) {
+//        NSDictionary *postReply = @{@"reply_createtime":_detailTopData.createtime,
+//                                    @"reply_content":_detailTopData.content,
+//                                    @"reply_pic":_detailTopData.picList};
+//        
+//        [replyList insertObject:postReply atIndex:0];
+//    }
     
     
     NSMutableArray *arr = [[NSMutableArray alloc] initWithCapacity:replyList.count];
     for (int i = 0 ; i < replyList.count ; i++) {
         DetailTableViewCellData *data = [[DetailTableViewCellData alloc] init];
+        data.replyId = [replyList[i][@"id"] integerValue];
         data.avatarImageUrl = dic[@"post"][@"user_info"][@"user_pic"];
-        data.floor = [NSString stringWithFormat:@"%d",i];
+        data.floor = replyList[i][@"reply_floor"];
         data.createtime = [DateUtil dateStr:[replyList[i][@"reply_createtime"] doubleValue] format:nil];
         data.content = replyList[i][@"reply_content"];
-        data.commonList = nil;
+        data.commonList = [[NSMutableArray alloc] initWithArray:@[]];
         
         NSArray *picList = replyList[i][@"reply_pic"];
         data.picList = [[NSMutableArray alloc] initWithCapacity:picList.count];
@@ -307,10 +311,13 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
         [self presentViewController:_browser animated:YES completion:nil];
     
 }
--(void) didOpenReply {
+-(void) didOpenReply:(NSInteger) index {
+    _cellIndex = index;
     self.faceView.transform = CGAffineTransformIdentity;
     [self.inputBarView focusInput:self.faceView];
 }
+
+#pragma mark - InputFacePanelDelegate
 -(void) didToggleFace {
 //    [UIView animateWithDuration:.5 animations:^{
 //        self.faceView.transform = CGAffineTransformMakeTranslation(0, -200);
@@ -320,6 +327,42 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 //    }];
     
 //    [self.inputView focusInput];
+}
+-(void) clickSubmit:(NSString*) str {
+    
+    DetailTableViewCellData *currentData = self.dataList[_cellIndex];
+    [currentData.commonList addObject:str];
+    
+    NSString *key = [NSString stringWithFormat:@"%ld",(long)_cellIndex];
+    [self.heightList removeObjectForKey:key];
+    [self.inputBarView hideInput];
+    [self.tableView reloadData];
+    
+    
+    NSString *uid = [LoginUtil getCurrentUserId];
+    NSString *rid = [NSString stringWithFormat:@"%d",currentData.replyId];
+    
+    if (!uid || !rid) return;
+    
+    NSDictionary *dic = @{
+                          @"content":str,
+                          @"uid":uid,
+                          @"pid":_pid,
+                          @"rid":rid};
+    
+    // send request
+    [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/comment/createComment", BaseCgiUrl]parameters:dic formBody:^(id<AFMultipartFormData> formData) {
+        
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSMutableDictionary *dic = [(NSDictionary*)responseObject valueForKey:@"content"];
+        NSLog(@"%@",dic);
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+    }];
+    
+    
+    
 }
 
     //避免循环引用
@@ -367,7 +410,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
     cell.myDelegate = self;
     cell.backgroundColor = [UIColor clearColor];
-    currentData.index = _imageCount;
+    currentData.index = indexPath.row;
     [cell setCellData:currentData];
     
     return cell;

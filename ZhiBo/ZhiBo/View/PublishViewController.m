@@ -14,13 +14,15 @@
 #import "AFNetworking.h"
 #import "HttpUtil.h"
 #import "LoginUtil.h"
-#import "FacePanel.h"
+
 
 
 #define NavigationBarHeight (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
 
 #define pubOptionViewHeight 40
 #define imageScrollViewHeight 70
+#define textViewMinHeight 100
+#define imageScrollViewMarginTop 10
 #define OptionBarHeight (pubOptionViewHeight+imageScrollViewHeight)
 
 
@@ -44,6 +46,8 @@
 @implementation PublishViewController
 {
     BOOL _isPub;
+    CGFloat _textViewY;
+    NSUInteger _inputFlag;
 }
 
 
@@ -54,6 +58,8 @@
         _isPub = self.pubType == PubTypePost;
         
         self.pid = dic[@"pid"];
+        
+        _textViewY = _isPub ? 46 : 14;
     }
     
     return self;
@@ -67,7 +73,7 @@
         self.title = @"回复";
     }
     
-//    self.extendedLayoutIncludesOpaqueBars = true;
+
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
     [self initNavBtn];
@@ -79,10 +85,18 @@
     }
     
     [self setTextArea];
+    
+    [self setImageContent];
 
     [self setPubOption];
 
-
+    
+    
+        if (!_isPub) {
+            [self.textView becomeFirstResponder];
+        } else {
+            [self.titleInput becomeFirstResponder];
+        }
 }
 
 - (void) initNavBtn{
@@ -111,10 +125,11 @@
 
 -(void)initContainerView {
     self.scrollView = [[UIScrollView alloc] init];
-    self.scrollView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight-OptionBarHeight);
+    self.scrollView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight-pubOptionViewHeight);
     NSLog(@"%f",NavigationBarHeight);
     self.scrollView.delegate = self;
     self.scrollView.contentSize = CGSizeMake(0, self.scrollView.frame.size.height+1);
+
     
     [self.view addSubview:self.scrollView];
     
@@ -134,16 +149,18 @@
     UIView *dividerLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 45, ScreenWidth, .5f)];
     [dividerLineView setBackgroundColor:UIColorFromRGB(0xcccccc)];
     
-    [self.titleInput becomeFirstResponder];
     
+    self.titleInput.delegate = self;
+    _inputFlag = 1;
     
-
+    [self.scrollView setTag:104];
     [self.scrollView addSubview:self.titleInput];
     [self.scrollView addSubview:dividerLineView];
 
 }
+
 -(void) setTextArea{
-    CGFloat y = _isPub ? 46 : 14;
+    
     self.textView = [[UITextView alloc] init];
 //    self.textView.backgroundColor = [UIColor redColor];
     
@@ -158,7 +175,7 @@
 //    placeHolder.backgroundColor = [UIColor blueColor];
     [self.textView addSubview:self.placeHolder];
     self.textView.delegate = self;
-    self.textView.frame = CGRectMake(12, y, ScreenWidth-24, self.scrollView.frame.size.height-y);
+    self.textView.frame = CGRectMake(12, _textViewY, ScreenWidth-24, textViewMinHeight);//self.scrollView.frame.size.height-y
     self.textView.text = @"";//@"444\U0001F60233";
     self.textView.scrollEnabled = false;
 //    textView.backgroundColor = [UIColor redColor];
@@ -170,13 +187,17 @@
     self.textView.scrollEnabled = true;
     [self.scrollView addSubview:self.textView];
     
-    
-    if (!_isPub) {
-        [self.textView becomeFirstResponder];
-    }
+
 
 }
+-(void) setImageContent {
+    self.imageScrollView = [[ImageScrollView alloc] initWithFrame:CGRectMake(0, _textViewY+textViewMinHeight+imageScrollViewMarginTop, ScreenWidth, imageScrollViewHeight)];
+    
+    
+    [self.imageScrollView setTag:101];
 
+    [self.scrollView addSubview:self.imageScrollView];
+}
 
 -(void) setPubOption {
     
@@ -190,20 +211,18 @@
     }
     self.faceView = [[FacePanel alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight, ScreenWidth, 200) andOption:nil];
     [self.faceView setTag:102];
-    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, imageScrollViewHeight, ScreenWidth, pubOptionViewHeight) andOption:option];
+    self.faceView.delegate = self;
     
+    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-pubOptionViewHeight, ScreenWidth, pubOptionViewHeight) andOption:option];
     
-    
-    self.imageScrollView = [[ImageScrollView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, imageScrollViewHeight)];
 
-    [self.imageScrollView setTag:101];
+//    self.bottomOptionView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-OptionBarHeight, ScreenWidth, OptionBarHeight)];
+//    
+//    [self.bottomOptionView addSubview:self.pubOptionView];
+//    [self.bottomOptionView addSubview:self.imageScrollView];
+//    self.bottomOptionView.backgroundColor = [UIColor redColor];
 
-
-    self.bottomOptionView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-OptionBarHeight, ScreenWidth, OptionBarHeight)];
-    
-    [self.bottomOptionView addSubview:self.pubOptionView];
-    [self.bottomOptionView addSubview:self.imageScrollView];
-    [self.view addSubview:self.bottomOptionView];
+    [self.view addSubview:self.pubOptionView];
     [self.view addSubview:self.faceView];
     
     
@@ -326,7 +345,11 @@
     
 }
 
-
+#pragma mark - UITextFieldDelegate
+- (void)textFieldDidBeginEditing:(UITextField *)textField;  {
+    _inputFlag = 1;
+    self.pubOptionView.hidden = YES;
+}
 
 #pragma mark - UITextViewDelegate
 
@@ -340,17 +363,20 @@
     CGFloat fixedWidth = textView.frame.size.width;
     CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
     CGRect newFrame = textView.frame;
-    newFrame.size = CGSizeMake(fmax(newSize.width, fixedWidth), newSize.height);
+    newFrame.size = CGSizeMake(fmax(newSize.width, fixedWidth), fmax(newSize.height,textViewMinHeight));
     textView.frame = newFrame;
 
     // when change the frame reset the not scroll
     [textView setScrollEnabled:false];
     textView.contentSize = CGSizeMake(0,0);
-
-    self.scrollView.contentSize = CGSizeMake(0, fmax(self.scrollView.frame.size.height+1,textView.frame.size.height+46));
+    self.imageScrollView.frame = CGRectMake(self.imageScrollView.frame.origin.x, newFrame.origin.y+newFrame.size.height+imageScrollViewMarginTop, self.imageScrollView.frame.size.width, self.imageScrollView.frame.size.height);
+    self.scrollView.contentSize = CGSizeMake(0, fmax(self.scrollView.frame.size.height+1,textView.frame.size.height+_textViewY+self.imageScrollView.frame.size.height+imageScrollViewMarginTop));
 
 }
-
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    self.pubOptionView.hidden = NO;
+    _inputFlag = 2;
+}
 #pragma mark - UIScrollViewDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -359,15 +385,38 @@
     
     [UIView animateWithDuration:.2 animations:^{
         self.faceView.transform = CGAffineTransformIdentity;
-        self.bottomOptionView.transform = CGAffineTransformIdentity;
+        self.pubOptionView.transform = CGAffineTransformIdentity;
         
     }];
     
     
 }
+#pragma mark - FaceDelegate
+-(void) didSelectFace:(NSString *)currentFace {
+    NSLog(@"%@",currentFace);
+    if (_inputFlag == 1) {
+        [self.titleInput insertText:@"3"];
+    }
+    
+    else if (_inputFlag == 2) {
+        [self.textView insertText:currentFace];
+    }
+    //    _textView.text = [NSString stringWithFormat:@"%@%@",_textView.text,currentFace];
+    
+}
+-(void) didBackFace {
+    if (_inputFlag == 1) {
+        [self.titleInput deleteBackward];
+    }
+    
+    else if (_inputFlag == 2) {
+        [self.textView deleteBackward];
+    }
 
--(void)viewDidUnload{
-    [super viewDidUnload];
+    
+}
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter]removeObserver:self.pubOptionView];
 }
 - (void)didReceiveMemoryWarning {

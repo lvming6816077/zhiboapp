@@ -26,7 +26,7 @@
     
     IDMPhotoBrowser *_browser;
     NSMutableArray *_idmPhotos;
-    NSInteger _imageCount;
+//    NSInteger _rowIndex;
 //    CGFloat commentHeight;
     
 }
@@ -44,7 +44,7 @@
     self.contentTextView.textContainer.lineFragmentPadding = 0;
     self.contentTextView.textContainerInset = UIEdgeInsetsMake(0,4,0,0);
     _idmPhotos = [NSMutableArray new];
-    _imageCount = 0;
+
     
     
     
@@ -90,7 +90,7 @@
         [nickLabel setTextColor:UIColorFromRGB(0X275dac)];
         
         
-        contentLabel.text = @"我是好人啊阿啊阿啊阿啊阿啊阿啊阿啊";
+        contentLabel.text = commentList[i];
         [contentLabel setTextColor:UIColorFromRGB(0x666666)];
         [contentLabel setFont:[UIFont systemFontOfSize:14]];
         
@@ -263,10 +263,13 @@
     otherHeight +
     [self heightForText:data.content]+
     [self heightForImage:data.picList]+
-    [self heightForComment:@[]];
+    [self heightForComment:data.commonList];
  
 }
 -(void) setCellData:(DetailTableViewCellData*)data{
+
+    [self.replyLabel setTag:data.index+200];
+    
     [self.avatarImageView setImageWithURL:[NSURL URLWithString:data.avatarImageUrl]];
     
     self.floorLabel.text = [NSString stringWithFormat:@"第%@楼",data.floor];
@@ -278,7 +281,7 @@
     [self initImageContent:data.picList index:data.index];
     
     NSArray *arr = @[];
-    [self initCommentContent:arr];
+    [self initCommentContent:data.commonList];
     
 }
 
@@ -290,8 +293,8 @@
 }
 -(void)replyClick:(UITapGestureRecognizer*) ges {
     
-    
-    [self.myDelegate didOpenReply];
+
+    [self.myDelegate didOpenReply:[ges view].tag-200];
 }
 
 @end

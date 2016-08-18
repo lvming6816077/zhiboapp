@@ -12,7 +12,7 @@
 @protocol DetailTableViewCellDelegate <NSObject>
 
 - (void)didOpenImage:(UIImageView*)currentImage;
-- (void)didOpenReply;
+- (void)didOpenReply:(NSInteger)index;
 
 @end
 @interface DetailTableViewCell : UITableViewCell

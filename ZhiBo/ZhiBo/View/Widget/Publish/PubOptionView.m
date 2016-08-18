@@ -114,7 +114,7 @@
         
     }
     
-    
+//    [[NSNotificationCenter defaultCenter]removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -123,8 +123,9 @@
     
 }
 -(void)openPosition:(UIButton*)btn {
+    
     [[[UIApplication sharedApplication] keyWindow] endEditing:true];
-    PublishViewController *vc = (PublishViewController*)[self.superview.superview nextResponder];
+    PublishViewController *vc = (PublishViewController*)[VCUtil getPresentedViewController];
     ChoosePositionViewController *choosePosition = [[ChoosePositionViewController alloc] init];
     choosePosition.delegate = self;
     choosePosition.currentCellCoordinate = _currentPosition;
@@ -174,13 +175,13 @@
 //    [self performSelector:@selector(delayMethod:) withObject:[NSString stringWithFormat:@"%f",kbSize.height] afterDelay:.1f];
 //    NSLog(@"%@",duration);
     
-    [UIView animateWithDuration:[duration floatValue]  animations:^{
-        
-        
-    }];
-    NSLog(@"x:%f",kbSize.height);
+//    [UIView animateWithDuration:[duration floatValue]  animations:^{
+//        
+//        
+//    }];
+//    NSLog(@"x:%f",kbSize.height);
     if (kbSize.height > 0) {
-        [self superview].transform = CGAffineTransformMakeTranslation(0, -kbSize.height);
+        self.transform = CGAffineTransformMakeTranslation(0, -kbSize.height);
         
         self.faceView.transform = CGAffineTransformIdentity;
     }
@@ -194,20 +195,20 @@
 -(void)keyboardWillHide:(NSNotification*)notification {
     if (_clickFace) {
         [UIView animateWithDuration:.2 animations:^{
-            [self superview].transform = CGAffineTransformMakeTranslation(0, -self.faceView.frame.size.height);
+            self.transform = CGAffineTransformMakeTranslation(0, -self.faceView.frame.size.height);
             self.faceView.transform = CGAffineTransformMakeTranslation(0, -self.faceView.frame.size.height);
             
         }];
-        
+        _clickFace = NO;
         
     } else {
-        [self superview].transform = CGAffineTransformIdentity;
+        self.transform = CGAffineTransformIdentity;
     }
     
 }
 
 -(void) showChooseImg{
-    [[VCUtil getPresentedViewController].view endEditing:YES];
+//    [[VCUtil getPresentedViewController].view endEditing:YES];
 //    PublishViewController *vc = (PublishViewController*)[self.superview nextResponder];
 //        
 //    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -236,7 +237,7 @@
 }
 -(void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 
-    PublishViewController *vc = (PublishViewController*)[self.superview.superview nextResponder];
+    PublishViewController *vc = (PublishViewController*)[self.superview nextResponder];
     if (buttonIndex == 0) {
         UIImagePickerController *imgPicker = [[UIImagePickerController alloc] init];
         
@@ -254,7 +255,7 @@
     
     DNImagePickerController *imagePicker = [[DNImagePickerController alloc] init];
     imagePicker.imagePickerDelegate = self;
-    PublishViewController *vc = (PublishViewController*)[self.superview.superview nextResponder];
+    PublishViewController *vc = (PublishViewController*)[self.superview nextResponder];
     [vc presentViewController:imagePicker animated:YES completion:nil];
     
     
@@ -275,7 +276,7 @@
 #pragma mark - UIImagePickerControllerDelegate
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
-    ImageScrollView *imageScroll = (ImageScrollView*)[self.superview viewWithTag:101];
+    ImageScrollView *imageScroll = (ImageScrollView*)[[self.superview viewWithTag:104] viewWithTag:101];
     if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         CGSize imagesize = image.size;
@@ -314,7 +315,7 @@
 {
     
 
-    ImageScrollView *imageScroll = (ImageScrollView*)[self.superview viewWithTag:101];
+    ImageScrollView *imageScroll = (ImageScrollView*)[[self.superview viewWithTag:104] viewWithTag:101];
     
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:imageAssets.count];
     for(DNAsset* asset in imageAssets) {
@@ -332,5 +333,9 @@
     [imagePicker dismissViewControllerAnimated:YES completion:^{
         
     }];
+}
+-(void)viewDidUnload{
+//    [super viewDidUnload];
+    
 }
 @end

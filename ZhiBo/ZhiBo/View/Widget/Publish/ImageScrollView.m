@@ -19,9 +19,11 @@
     NSInteger _imageCount;
     ALAssetsLibrary *_lib;
     NSMutableArray *_idmPhotos;
-//    PublishViewController *_pvc;
+
     IDMPhotoBrowser *_browser;
     NSMutableArray *_images;
+    
+    CGRect _orignFrame;
     
 }
 
@@ -34,13 +36,16 @@
         self.showsHorizontalScrollIndicator = false;
         _idmPhotos = [[NSMutableArray alloc] init];
         _images = [[NSMutableArray alloc] init];
-//        _pvc = [[PublishViewController alloc] init];
-//        _browser =
+        _orignFrame = frame;
+        
+//        self
+//        self.hidden = YES;
+        
     }
     return self;
 }
 -(void)setImage:(UIImage*)image andImageView:(UIImageView*)imageView{
-
+    
     imageView.image = image;
     CGFloat x = (_imageCount+1)*8+_imageCount*self.frame.size.height;
     imageView.frame = CGRectMake(x, 0, self.frame.size.height, self.frame.size.height);

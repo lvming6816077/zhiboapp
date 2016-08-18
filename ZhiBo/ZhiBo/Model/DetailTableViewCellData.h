@@ -16,5 +16,5 @@
 @property(nonatomic,strong) NSMutableArray *commonList;
 @property(nonatomic,strong) NSString *content;
 @property(nonatomic,assign) NSInteger index;
-
+@property(nonatomic,assign) NSInteger replyId;
 @end

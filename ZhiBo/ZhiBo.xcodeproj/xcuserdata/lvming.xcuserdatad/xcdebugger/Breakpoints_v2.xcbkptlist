@@ -4,19 +4,13 @@
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
          <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ZhiBo/ThirdSDK/IDMPhotoBrowser/IDMPhotoBrowser.m"
-            timestampString = "483290758.968376"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "336"
-            endingLineNumber = "336"
-            landmarkName = "-tapGestureRecognized:"
-            landmarkType = "5">
+            scope = "0"
+            stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -25,61 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/ChoosePositionViewController.m"
-            timestampString = "487857264.512756"
+            filePath = "ZhiBo/View/Widget/Publish/PubOptionView.m"
+            timestampString = "490808567.25899"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
-            landmarkName = "-onPOISearchDone:response:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ChoosePositionViewController onPOISearchDone:response:]"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/ChoosePositionViewController.m"
-                  timestampString = "490519274.042851"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "213"
-                  endingLineNumber = "213"
-                  offsetFromSymbolStart = "756">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ChoosePositionViewController onPOISearchDone:response:]"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/ChoosePositionViewController.m"
-                  timestampString = "490519274.043411"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "213"
-                  endingLineNumber = "213"
-                  offsetFromSymbolStart = "774">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/PublishViewController.m"
-            timestampString = "490503177.736628"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "268"
-            endingLineNumber = "268"
-            landmarkName = "-clickReply:"
+            startingLineNumber = "339"
+            endingLineNumber = "339"
+            landmarkName = "-viewDidUnload"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -90,12 +36,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZhiBo/View/PublishViewController.m"
-            timestampString = "490503177.736628"
+            timestampString = "490717502.029621"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
-            landmarkName = "-clickReply:"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
+            landmarkName = "-viewDidDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -105,300 +51,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/PublishViewController.m"
-            timestampString = "490503177.736628"
+            filePath = "ZhiBo/View/Widget/Publish/PubOptionView.m"
+            timestampString = "490810839.335648"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "262"
-            endingLineNumber = "262"
-            landmarkName = "-clickReply:"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
+            landmarkName = "-keyboardWillShow:"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[PublishViewController clickReply:]"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/PublishViewController.m"
-                  timestampString = "490519274.045052"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "262"
-                  endingLineNumber = "262"
-                  offsetFromSymbolStart = "666">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__36-[PublishViewController clickReply:]_block_invoke"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/PublishViewController.m"
-                  timestampString = "490519274.045165"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "263"
-                  endingLineNumber = "263"
-                  offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/PublishViewController.m"
-            timestampString = "490503177.736628"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "312"
-            endingLineNumber = "312"
-            landmarkName = "-clickPub:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[PublishViewController clickPub:]"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/PublishViewController.m"
-                  timestampString = "490519274.04576"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "312"
-                  endingLineNumber = "312"
-                  offsetFromSymbolStart = "1522">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__34-[PublishViewController clickPub:]_block_invoke"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/PublishViewController.m"
-                  timestampString = "490519274.045855"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "313"
-                  endingLineNumber = "313"
-                  offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/PublishViewController.m"
-            timestampString = "490503177.736628"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
-            landmarkName = "-clickPub:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/PublishViewController.m"
-            timestampString = "490503177.736628"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "324"
-            endingLineNumber = "324"
-            landmarkName = "-clickPub:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/Publish/ImageScrollView.m"
-            timestampString = "489314869.68285"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "-setImage:andImageView:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/DetailBottomView.m"
-            timestampString = "489918936.181498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "-clickLike:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/DetailBottomView.m"
-            timestampString = "489918936.181498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "-clickLike:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/DetailBottomView.m"
-            timestampString = "489918936.181498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "-clickLike:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[DetailBottomView clickLike:]"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/Widget/DetailBottomView.m"
-                  timestampString = "490519274.04889"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
-                  offsetFromSymbolStart = "276">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__30-[DetailBottomView clickLike:]_block_invoke"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/Widget/DetailBottomView.m"
-                  timestampString = "490519274.049001"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "52"
-                  endingLineNumber = "52"
-                  offsetFromSymbolStart = "30">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/DetailBottomView.m"
-            timestampString = "489918936.181498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "-clickLike:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__30-[DetailBottomView clickLike:]_block_invoke_2"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/Widget/DetailBottomView.m"
-                  timestampString = "490519274.049661"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "68"
-                  endingLineNumber = "68"
-                  offsetFromSymbolStart = "630">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__copy_helper_block_"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/Widget/DetailBottomView.m"
-                  timestampString = "490519274.049768"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "68"
-                  endingLineNumber = "68"
-                  offsetFromSymbolStart = "34">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__destroy_helper_block_"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/Widget/DetailBottomView.m"
-                  timestampString = "490519274.049861"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "68"
-                  endingLineNumber = "68"
-                  offsetFromSymbolStart = "18">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__30-[DetailBottomView clickLike:]_block_invoke.72"
-                  moduleName = "ZhiBo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lvming/Desktop/work/zhiboapp/ZhiBo/ZhiBo/View/Widget/DetailBottomView.m"
-                  timestampString = "490519274.049952"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "70"
-                  endingLineNumber = "70"
-                  offsetFromSymbolStart = "48">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -408,12 +68,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZhiBo/View/DetailViewController.m"
-            timestampString = "490443611.614565"
+            timestampString = "492443516.436908"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "321"
-            endingLineNumber = "321"
-            landmarkName = "-didToggleFace"
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "-clickSubmit:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -423,13 +83,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/InputFacePanel.m"
-            timestampString = "490462362.603098"
+            filePath = "ZhiBo/View/DetailViewController.m"
+            timestampString = "492443997.653593"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
-            landmarkName = "-keyboardWillHide:"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
+            landmarkName = "-clickSubmit:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -439,45 +99,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/Publish/PubOptionView.m"
-            timestampString = "490519440.128127"
+            filePath = "ZhiBo/View/DetailViewController.m"
+            timestampString = "492443997.653593"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "210"
-            endingLineNumber = "210"
-            landmarkName = "-showChooseImg"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/Publish/PubOptionView.m"
-            timestampString = "490519440.128127"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "195"
-            endingLineNumber = "195"
-            landmarkName = "-keyboardWillHide:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZhiBo/View/Widget/Publish/PubOptionView.m"
-            timestampString = "490519440.128127"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
-            landmarkName = "-keyboardWillShow:"
+            startingLineNumber = "361"
+            endingLineNumber = "361"
+            landmarkName = "-clickSubmit:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

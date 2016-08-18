@@ -47,7 +47,7 @@
     NSString *uid = [LoginUtil getCurrentUserId];
     NSString *pid = [NSString stringWithFormat:@"%d",_detailBottomData.pid];
     
-    [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/post/doLikePost", BaseCgiUrl]parameters:@{@"pid":pid,@"uid":uid} formBody:^(id<AFMultipartFormData> formData) {
+    [[HttpUtil shareInstance] post:[NSString stringWithFormat:@"%@/post/doLikePost", BaseCgiUrl] parameters:@{@"pid":pid,@"uid":uid} formBody:^(id<AFMultipartFormData> formData) {
         
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
 

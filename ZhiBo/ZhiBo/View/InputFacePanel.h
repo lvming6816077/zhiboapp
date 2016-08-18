@@ -11,6 +11,7 @@
 @protocol InputFacePanelDelegate <NSObject>
 
 -(void) didToggleFace;
+-(void) clickSubmit:(NSString*) str;
 
 @end
 

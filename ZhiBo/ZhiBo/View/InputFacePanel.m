@@ -76,10 +76,13 @@
     submitBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];
     [submitBtn setBackgroundColor:UIColorFromRGB(0X0078cd)];
     [submitBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
+    [submitBtn addTarget:self action:@selector(clickSubmit:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:submitBtn];
 }
-
+-(void) clickSubmit:(UIButton*)btn {
+    NSString *str = _textView.text;
+    [self.delegate clickSubmit:str];
+}
 -(void) didToggleFace:(UITapGestureRecognizer*) ges {
     _clickFace = YES;
     [_textView resignFirstResponder];
@@ -91,33 +94,39 @@
 }
 #pragma mark - keyboard NSNotificationCenter
 -(void)keyboardWillShow:(NSNotification*)notification {
-    NSDictionary* info = [notification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    ////    CGRect keyboardBounds;
-    //    CGRect keyboardFrame = [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    ////    keyboardFrame
-    //    NSNumber *duration = [notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    //    NSNumber *curve = [notification.userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey];
+    if (_textView.isFirstResponder) {
+        NSDictionary* info = [notification userInfo];
+        CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+        ////    CGRect keyboardBounds;
+        //    CGRect keyboardFrame = [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        ////    keyboardFrame
+        //    NSNumber *duration = [notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+        //    NSNumber *curve = [notification.userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey];
+        
+        //    [self.view bringSubviewToFront:self.bottomOptionView];
+        
+        _inputY = -kbSize.height-self.frame.size.height;
+        
+        self.transform = CGAffineTransformMakeTranslation(0, _inputY);
+        _facePanel.transform = CGAffineTransformIdentity;
+    }
     
-//    [self.view bringSubviewToFront:self.bottomOptionView];
-    
-    _inputY = -kbSize.height-self.frame.size.height;
-    
-    self.transform = CGAffineTransformMakeTranslation(0, _inputY);
-    _facePanel.transform = CGAffineTransformIdentity;
     
 }
 
 #pragma mark - keyboard NSNotificationCenter
 -(void)keyboardWillHide:(NSNotification*)notification {
-    if (_clickFace) {
-        [UIView animateWithDuration:.2 animations:^{
-            self.transform = CGAffineTransformMakeTranslation(0, -_facePanel.frame.size.height-self.frame.size.height);
-        }];
-        
-    } else {
-        self.transform = CGAffineTransformIdentity;
+    if (_textView.isFirstResponder) {
+        if (_clickFace) {
+            [UIView animateWithDuration:.2 animations:^{
+                self.transform = CGAffineTransformMakeTranslation(0, -_facePanel.frame.size.height-self.frame.size.height);
+            }];
+            
+        } else {
+            self.transform = CGAffineTransformIdentity;
+        }
     }
+    
     
 }
 #pragma mark - FaceDelegate

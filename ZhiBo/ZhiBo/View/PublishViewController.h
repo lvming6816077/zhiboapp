@@ -7,7 +7,7 @@
 //
 
 #import "BaseViewController.h"
-
+#import "FacePanel.h"
 
 // 2种发表类型
 typedef NS_ENUM(NSUInteger, PubType)
@@ -16,7 +16,12 @@ typedef NS_ENUM(NSUInteger, PubType)
     PubTypeReply = 2   // 回复
 };
 
-@interface PublishViewController : BaseViewController<UITextViewDelegate,UIScrollViewDelegate,UIScrollViewDelegate>
+@interface PublishViewController : BaseViewController
+<UITextViewDelegate,
+UITextFieldDelegate,
+UIScrollViewDelegate,
+UIScrollViewDelegate,
+FacePanellDelegate>
 
 
 -(instancetype) initWithPubType:(PubType) type andOption:(NSDictionary*) dic;
