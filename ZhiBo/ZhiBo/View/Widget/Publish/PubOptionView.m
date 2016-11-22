@@ -9,7 +9,7 @@
 #import "PubOptionView.h"
 #import "PublishViewController.h"
 #import "Defines.h"
-#import "ImageScrollView.h"
+
 #import "DNAsset.h"
 #import "DNPhotoBrowser.h"
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSMutableArray *assetsArray;
 @property (nonatomic, strong) FacePanel *faceView;
 @property (nonatomic, strong) UIView *bottomOptionView;
+@property (nonatomic, strong) ImageScrollView *imageScrollView;
 @end
 @implementation PubOptionView
 {
@@ -30,11 +31,12 @@
 
 }
 
--(instancetype) initWithFrame:(CGRect)frame andOption:(NSArray*)optionList{
+-(instancetype) initWithFrame:(CGRect)frame andOption:(NSArray*)optionList andImageScrollView:(ImageScrollView*) imageScrollView{
 
     if(self = [super initWithFrame:frame]) {
         
         self.backgroundColor = UIColorFromRGB(0xf8f8f8);
+        self.imageScrollView = imageScrollView;
         _clickFace = NO;
         _selectedPhoto = [NSMutableArray new];
         _currentPosition = nil;
@@ -115,9 +117,7 @@
     }
     
 //    [[NSNotificationCenter defaultCenter]removeObserver:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+
     
     
     
@@ -159,7 +159,7 @@
     
     [vc.view endEditing:YES];
 }
-#pragma mark - keyboard NSNotificationCenter
+
 
 -(void)keyboardWillShow:(NSNotification*)notification {
     NSDictionary* info = [notification userInfo];
@@ -187,10 +187,7 @@
     }
     
 }
--(void) delayMethod:(NSString*)height {
-    
-}
-#pragma mark - keyboard NSNotificationCenter
+
 
 -(void)keyboardWillHide:(NSNotification*)notification {
     if (_clickFace) {
@@ -276,7 +273,7 @@
 #pragma mark - UIImagePickerControllerDelegate
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
-    ImageScrollView *imageScroll = (ImageScrollView*)[[self.superview viewWithTag:104] viewWithTag:101];
+    ImageScrollView *imageScroll = self.imageScrollView;
     if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
         UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
         CGSize imagesize = image.size;
@@ -315,7 +312,7 @@
 {
     
 
-    ImageScrollView *imageScroll = (ImageScrollView*)[[self.superview viewWithTag:104] viewWithTag:101];
+    ImageScrollView *imageScroll = self.imageScrollView;
     
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:imageAssets.count];
     for(DNAsset* asset in imageAssets) {
@@ -334,8 +331,5 @@
         
     }];
 }
--(void)viewDidUnload{
-//    [super viewDidUnload];
-    
-}
+
 @end

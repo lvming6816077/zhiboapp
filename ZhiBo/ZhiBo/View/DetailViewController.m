@@ -28,7 +28,7 @@
 
 #define BottomViewHeight 44
 
-NSString * const cellIdentifier = @"DetailTableViewCell";
+
 
 
 @interface DetailViewController ()
@@ -52,6 +52,8 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     NSString *_pid;
     
     NSInteger _cellIndex;
+    
+    NSString * cellIdentifier;
 
 
     
@@ -87,6 +89,8 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 
     self.title = @"详情页";
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    cellIdentifier = @"DetailTableViewCell";
     
     [self initTableView];
     
@@ -154,12 +158,16 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     
     // 初始化tableview
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-NavigationBarHeight-BottomViewHeight)];
-    self.tableView.separatorStyle = NO;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self.view addSubview:self.tableView];
     
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0,0,ScreenWidth,.5)];
+    v.backgroundColor = [UIColor colorWithRed:200/255.0 green:199/255.0 blue:204/255.0 alpha:1.0];
+    self.tableView.tableFooterView = v;
     
     // 初始化变量
     [self refeshValue];
@@ -214,8 +222,6 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 }
 -(void) fetchData:(NSString*)url {
     
-//    url = @"http://tenny.qiniudn.com/detailJson.json";
-    
     url = [self getParams];
 
     [[HttpUtil shareInstance] get:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject, BOOL isCache) {
@@ -232,10 +238,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
 
 -(void) dealWithData:(NSDictionary*)dic {
     
-    [self.tableView.mj_header endRefreshing];
-    [self.tableView.mj_footer endRefreshing];
-    
-    self.tableView.separatorStyle = YES;
+
     
     NSMutableArray *replyList = [[NSMutableArray alloc] initWithArray:(NSArray*)dic[@"replyList"]];
     
@@ -290,6 +293,10 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
         
         [self.tableView reloadData];
     }
+    
+    
+    [self.tableView.mj_header endRefreshing];
+    [self.tableView.mj_footer endRefreshing];
 
 
 }
@@ -397,7 +404,7 @@ NSString * const cellIdentifier = @"DetailTableViewCell";
     return 1;
 }
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
+
     return self.dataList.count;
     
 }

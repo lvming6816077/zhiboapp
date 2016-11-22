@@ -10,6 +10,7 @@
 #import "DNImagePickerController.h"
 #import "DNPhotoBrowser.h"
 #import "ChoosePositionViewController.h"
+#import "ImageScrollView.h"
 @interface PubOptionView : UIView
 
 <DNImagePickerControllerDelegate,
@@ -23,6 +24,9 @@ UINavigationControllerDelegate>
 
 @property(nonatomic,strong) NSArray *optionList;
 
--(instancetype) initWithFrame:(CGRect)frame andOption:(NSArray*)optionList;
+-(instancetype) initWithFrame:(CGRect)frame andOption:(NSArray*)optionList andImageScrollView:(ImageScrollView*) imageScrollView;
 -(NSDictionary*) getCurrentPosition;
+
+-(void)keyboardWillHide:(NSNotification*)notification;
+-(void)keyboardWillShow:(NSNotification*)notification;
 @end

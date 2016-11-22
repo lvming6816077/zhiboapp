@@ -45,17 +45,17 @@
     
     CGContextBeginPath(context);
     
-    CGContextMoveToPoint(context, 0, rect.size.height);
+    CGContextMoveToPoint(context, 10, rect.size.height);
     
-    CGContextAddLineToPoint(context,40, rect.size.height);
+    CGContextAddLineToPoint(context,30, rect.size.height);
 //    CGContextSetLineWidth(context, 1.0);
 //    CGContextSetLineWidth(context, .8);
-    CGContextAddLineToPoint(context,50, 0);
+    CGContextAddLineToPoint(context,40, 0);
 //    CGContextSetLineWidth(context, .8);
 //    CGContextSetLineWidth(context, 1.0);
-    CGContextAddLineToPoint(context,60, rect.size.height);
+    CGContextAddLineToPoint(context,50, rect.size.height);
     
-    CGContextAddLineToPoint(context,rect.size.width, rect.size.height);
+    CGContextAddLineToPoint(context,rect.size.width-10, rect.size.height);
     
 //    CGContextStrokePath(context);
     CGContextDrawPath(context, kCGPathStroke); // 画填充的图案

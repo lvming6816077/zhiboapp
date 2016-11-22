@@ -29,4 +29,6 @@
 
 
 -(void)setCellData:(BoListViewCellData *)data;
+-(CGFloat) heightForText:(BoListViewCellData *)data ;
+-(CGFloat) heightForImage:(BoListViewCellData *)data ;
 @end

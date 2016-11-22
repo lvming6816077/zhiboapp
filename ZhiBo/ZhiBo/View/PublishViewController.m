@@ -67,6 +67,12 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    
     if (self.pubType == PubTypePost) {
         self.title = @"发表";
     } else {
@@ -213,7 +219,7 @@
     [self.faceView setTag:102];
     self.faceView.delegate = self;
     
-    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-pubOptionViewHeight, ScreenWidth, pubOptionViewHeight) andOption:option];
+    self.pubOptionView = [[PubOptionView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-pubOptionViewHeight, ScreenWidth, pubOptionViewHeight) andOption:option andImageScrollView:self.imageScrollView];
     
 
 //    self.bottomOptionView = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-NavigationBarHeight-OptionBarHeight, ScreenWidth, OptionBarHeight)];
@@ -415,9 +421,28 @@
 
     
 }
+#pragma mark - keyboard NSNotificationCenter
+
+-(void)keyboardWillShow:(NSNotification*)notification {
+    [self.pubOptionView keyboardWillShow:notification];
+    
+}
+
+#pragma mark - keyboard NSNotificationCenter
+
+-(void)keyboardWillHide:(NSNotification*)notification {
+    [self.pubOptionView keyboardWillHide:notification];
+    
+}
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter]removeObserver:self.pubOptionView];
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

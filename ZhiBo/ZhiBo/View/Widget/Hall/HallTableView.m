@@ -20,6 +20,9 @@
 #import "DetailTopData.h"
 #import "DetailBottomData.h"
 
+
+
+
 @interface HallTableView ()
 @property(nonatomic,strong) NSMutableDictionary *heightList;
 @end
@@ -28,38 +31,46 @@
 @implementation HallTableView
 {
     NSInteger _start;
+    NSString *cellIdentifier;
 }
 
 
 
 -(instancetype) initWithFrame:(CGRect)frame {
-//    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:true];
+
     if (self = [super initWithFrame:frame]) {
         self.delegate = self;
         self.dataSource = self;
         
         self.heightList = [[NSMutableDictionary alloc] init];
+        
+        cellIdentifier = @"BoListViewCell";
+        
+        // 初始化cell
+        UINib *cellNib = [UINib nibWithNibName:cellIdentifier bundle:nil];
+        [self registerNib:cellNib forCellReuseIdentifier:cellIdentifier];
 
         
 //        UINib *cellNib = [UINib nibWithNibName:@"BoListViewCell" bundle:nil];
 //        [self registerNib:cellNib forCellReuseIdentifier:@"BoListViewCell"];
 //        [self registerClass:[BoListViewCell class] forCellReuseIdentifier:@"BoListViewCell"];
-        self.rowHeight = UITableViewAutomaticDimension;
+        //self.rowHeight = UITableViewAutomaticDimension;
 //        self.estimatedRowHeight = 430;
-
+        
+        // 设置分割线样式
         [self setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
-//        [self.backgroundView setBackgroundColor:UIColorFromRGB(0xcccccc)];
         
         self.backgroundView = nil;
         
-        self.backgroundColor = UIColorFromRGB(0xf0f0f0);
+        self.backgroundColor = UIColorFromRGB(0xefefef);
 
         
         self.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
 
             self.dataList = nil;
             _start = 1;
+            self.heightList = [[NSMutableDictionary alloc] init];
             [self fetchData:@""];
             
         }];
@@ -193,26 +204,27 @@
     return self.dataList.count;
 }
 
--(CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
+-(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
     NSString *key = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     if ([self.heightList objectForKey:key]) {
         return [[self.heightList objectForKey:key] floatValue];
     } else {
         
-        CGFloat baseHeight = 183.0f;
-        CGFloat height = 0;
-        BoListViewCellData *currentData = self.dataList[indexPath.row];
-        if (currentData.picList.count == 0) {
-            height = baseHeight;
-        } else if (currentData.picList.count == 1) {
-            height = baseHeight+((ScreenWidth-16)/2)+20;
-        } else {
-            height = baseHeight+((ScreenWidth-16)/2);
-        }
+        CGFloat baseHeight = 115.0f;
         
+        BoListViewCellData *currentData = self.dataList[indexPath.row];
+        BoListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+
+        
+        CGFloat imageHeight = [cell heightForImage:currentData];
+        CGFloat textHeight = [cell heightForText:currentData];
+        
+        CGFloat height = baseHeight + imageHeight + textHeight;
+        
+
         [self.heightList setValue:[NSString stringWithFormat:@"%g",height ] forKey:key];
+
         return height;
         
     }
@@ -222,16 +234,10 @@
     
     
     BoListViewCellData *currentData = self.dataList[indexPath.row];
-    NSString *cellIdentifier = @"BoListViewCell";
-    BoListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
-    if (!cell) {
-        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"BoListViewCell" owner:self options:nil];
+    BoListViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
 
-        cell = (BoListViewCell*)[nib objectAtIndex:0];
-        NSLog(@"%@",@"复用");
-        
-    }
+
 
     cell.backgroundColor = [UIColor clearColor];
     [cell setCellData:currentData];

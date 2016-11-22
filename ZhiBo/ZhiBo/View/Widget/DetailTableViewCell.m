@@ -33,7 +33,7 @@
 
 - (void)awakeFromNib {
     // Initialization code
-    
+    [super awakeFromNib];
     self.avatarImageView.layer.cornerRadius = self.avatarImageView.frame.size.width/2;
     self.avatarImageView.clipsToBounds = true;
     self.avatarImageView.userInteractionEnabled = true;
@@ -124,7 +124,7 @@
             make.width.mas_lessThanOrEqualTo(wrapWidth-fmin(nickSize.width, contentMax)-timeWidth);
         }];
         [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(contentLabel.mas_right).with.offset(0);
+            make.left.equalTo(contentLabel.mas_right).with.offset(3);
             make.top.equalTo(wrap.mas_top).with.offset(0);
             make.height.mas_equalTo(height);
             make.width.mas_equalTo(timeWidth);
@@ -171,7 +171,7 @@
 
         NSDictionary *dicImage = picList[i];
 
-        CGFloat imageW = (ScreenWidth-16);
+        CGFloat imageW = (ScreenWidth);
         CGFloat imageH = [dicImage[@"h"] floatValue] * imageW/ [dicImage[@"w"] floatValue];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, imageW, imageH)];
         [imageView setImageWithURL:[NSURL URLWithString:qiuniuUrl(dicImage[@"key"], 600)]];
@@ -234,7 +234,7 @@
         
         NSDictionary *dicImage = picList[i];
         
-        CGFloat imageW = (ScreenWidth-16);
+        CGFloat imageW = (ScreenWidth);
         CGFloat imageH = [dicImage[@"h"] floatValue] * imageW/ [dicImage[@"w"] floatValue];
 
         if (i == picList.count-1) {

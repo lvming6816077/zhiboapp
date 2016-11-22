@@ -19,10 +19,10 @@
 
 - (void)awakeFromNib {
     // Initialization code
+    [super awakeFromNib];
     
-    [self.FeedsLiView.layer setBorderColor:UIColorFromRGB(0xcccccc).CGColor];
+    [self.FeedsLiView.layer setBorderColor:UIColorFromRGB(0xdedfe0).CGColor];
     [self.FeedsLiView.layer setBorderWidth:0.5];
-    [self.FeedsLiView.layer setCornerRadius:3.0];
     
     self.avatarImageView.layer.cornerRadius = self.avatarImageView.frame.size.width/2;
     self.avatarImageView.clipsToBounds = true;
@@ -35,6 +35,53 @@
 //    self.contentView.translatesAutoresizingMaskIntoConstraints = false;
 }
 
+-(CGFloat) heightForText:(BoListViewCellData *)data {
+    [self.titleLabel setText:data.title];
+    
+    CGSize titleSize = [self.titleLabel sizeThatFits:CGSizeMake(ScreenWidth-16, MAXFLOAT)];
+    
+    CGFloat titleHeight = ceilf(titleSize.height);
+    
+    [self.descLabel setText:data.desc];
+    
+    CGSize descSize = [self.descLabel sizeThatFits:CGSizeMake(ScreenWidth-16, MAXFLOAT)];
+    
+    CGFloat descHeight = ceilf(descSize.height);
+    
+    return descHeight + titleHeight;
+    
+    
+}
+
+-(CGFloat) heightForImage:(BoListViewCellData *)data {
+    
+    CGFloat wrapperWidth = ScreenWidth;
+    
+    CGFloat height = 0;
+    
+    CGFloat marginTop = 12;
+    
+    if (data.picList.count == 0) {
+        height = 0;
+    } else if (data.picList.count == 1) {
+        height = wrapperWidth/2+20 + marginTop;
+    } else if (data.picList.count == 2) {
+        CGFloat margin = 2.0f;
+        CGFloat width = (wrapperWidth - margin)/2;
+        
+        height = width + marginTop;
+
+    } else if (data.picList.count >= 3) {
+        CGFloat margin = 2.0f;
+        CGFloat smallWidth = (wrapperWidth-margin)/4;
+
+
+        height = smallWidth*2+margin + marginTop;
+    }
+    
+    return height;
+    
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     
@@ -47,11 +94,8 @@
         [view removeFromSuperview];
     }
     
-//    data.picList
-    CGFloat wrapperWidth = ScreenWidth-16-16;
-//    NSLog(@"%d",data.picList.count);
-//    CGFloat wrapperHeight = 200;
-    
+    CGFloat wrapperWidth = ScreenWidth;
+
     if (data.picList.count == 0) {
         self.imageContentHeight.constant = 0;
         self.imageContentMarginTop.constant = 0;
@@ -64,10 +108,11 @@
         [self setImage:image url:data.picList[0]];
     
     } else if (data.picList.count == 2) {
-        CGFloat width = (wrapperWidth - 5)/2;
+        CGFloat margin = 2.0f;
+        CGFloat width = (wrapperWidth - margin)/2;
 
         UIImageView *imageLeft = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, width)];
-        UIImageView *imageRight = [[UIImageView alloc] initWithFrame:CGRectMake(width+5, 0, width, width)];
+        UIImageView *imageRight = [[UIImageView alloc] initWithFrame:CGRectMake(width+margin, 0, width, width)];
 
         [self.imageContentView addSubview:imageLeft];
         [self.imageContentView addSubview:imageRight];
@@ -80,17 +125,17 @@
         [self setImage:imageLeft url:data.picList[0]];
         [self setImage:imageRight url:data.picList[1]];
     } else if (data.picList.count >= 3) {
-
-        CGFloat smallWidth = (wrapperWidth-5)/4;
-        UIImageView *image1 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, smallWidth*3, smallWidth*2+5)];
-        UIImageView *image2 = [[UIImageView alloc] initWithFrame:CGRectMake(smallWidth*3+5, 0, smallWidth, smallWidth)];
-        UIImageView *image3 = [[UIImageView alloc] initWithFrame:CGRectMake(smallWidth*3+5, smallWidth+5, smallWidth, smallWidth)];
+        CGFloat margin = 2.0f;
+        CGFloat smallWidth = (wrapperWidth-margin)/4;
+        UIImageView *image1 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, smallWidth*3, smallWidth*2+margin)];
+        UIImageView *image2 = [[UIImageView alloc] initWithFrame:CGRectMake(smallWidth*3+margin, 0, smallWidth, smallWidth)];
+        UIImageView *image3 = [[UIImageView alloc] initWithFrame:CGRectMake(smallWidth*3+margin, smallWidth+margin, smallWidth, smallWidth)];
 
         [self.imageContentView addSubview:image1];
         [self.imageContentView addSubview:image2];
         [self.imageContentView addSubview:image3];
         
-        self.imageContentHeight.constant = smallWidth*2+5;
+        self.imageContentHeight.constant = smallWidth*2+margin;
         self.imageContentMarginTop.constant = 12;
         
         [self setImage:image1 url:data.picList[0]];
